@@ -41,7 +41,14 @@ This project is driven by user stories. The development process is as follows:
 
 ## Documentation and Requirements Tracing
 
-We will use Sphinx for generating project documentation and Sphinx-needs for requirements tracing. All documentation and requirements will be kept within the repository.
+We will use Sphinx for generating project documentation and Sphinx-needs for requirements tracing. All documentation and requirements will be kept within the repository, following the process outlined in `Plans/01-Requirements_planning.md`.
+
+Key aspects include:
+*   **User Stories:** Captured in `Documentation/UserStories` as primary input.
+*   **Requirement Definition:** Detailed requirements documented in `Documentation/Requirements`.
+*   **Traceability:** Each requirement traces back to user stories.
+*   **Verification:** Requirements include acceptance criteria.
+*   **Structure:** Organized into Product, Functional, and Non-functional categories within `Documentation/Requirements`.
 
 ## Agent Instructions
 
