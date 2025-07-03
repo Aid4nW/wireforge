@@ -39,6 +39,10 @@ This project is driven by user stories. The development process is as follows:
 1.  **Clone the repository:** `git clone https://github.com/your-username/wireforge.git`
 2.  **Open `index.html` in your browser** to run the application.
 
+## Documentation and Requirements Tracing
+
+We will use Sphinx for generating project documentation and Sphinx-needs for requirements tracing. All documentation and requirements will be kept within the repository.
+
 ## Agent Instructions
 
 *   **Understand the Goal:** Before making changes, understand the goal of the task and how it fits into the overall project.
