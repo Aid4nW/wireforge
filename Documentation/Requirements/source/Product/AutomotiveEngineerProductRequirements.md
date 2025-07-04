@@ -1,54 +1,56 @@
----
-id: REQ-PROD-AE-001
-title: Functional Safety Assurance
-status: Draft
-priority: Medium
-tags: [safety]
-related_stories: [story:AutomotiveEngineer]
----
+# Automotive Engineer Product Requirements
 
-## The system must enable the design of wiring harnesses that meet stringent functional safety requirements and prevent hazards.
+```{preq} REQ-PROD-AE-001
+:status: Draft
+:importance: Medium
+:tags: safety
+:related_stories: story:AutomotiveEngineer
 
----
-id: REQ-PROD-AE-002
-title: Manufacturability and Cost Optimization
-status: Draft
-priority: Medium
-tags: [cost, manufacturing]
-related_stories: [story:AutomotiveEngineer]
----
+Functional Safety Assurance
 
-## The system must support the design of harnesses that are efficient to produce, minimize material waste, and reduce overall vehicle cost.
+The system must enable the design of wiring harnesses that meet stringent functional safety requirements and prevent hazards.
+```
 
----
-id: REQ-PROD-AE-003
-title: System Integration
-status: Draft
-priority: Medium
-tags: [integration]
-related_stories: [story:AutomotiveEngineer]
----
+```{preq} REQ-PROD-AE-002
+:status: Draft
+:importance: Medium
+:tags: cost, manufacturing
+:related_stories: story:AutomotiveEngineer
 
-## The system must enable seamless integration of harness designs with other vehicle systems (e.g., ECUs, sensors, actuators) and communication networks (e.g., CAN, LIN, Ethernet).
+Manufacturability and Cost Optimization
 
----
-id: REQ-PROD-AE-004
-title: Traceability and Documentation
-status: Draft
-priority: Medium
-tags: [documentation, traceability]
-related_stories: [story:AutomotiveEngineer]
----
+The system must support the design of harnesses that are efficient to produce, minimize material waste, and reduce overall vehicle cost.
+```
 
-## The system must provide comprehensive documentation and traceability from requirements to design, testing, and validation.
+```{preq} REQ-PROD-AE-003
+:status: Draft
+:importance: Medium
+:tags: integration
+:related_stories: story:AutomotiveEngineer
 
----
-id: REQ-PROD-AE-005
-title: Collaboration Support
-status: Draft
-priority: Medium
-tags: [collaboration]
-related_stories: [story:AutomotiveEngineer]
----
+System Integration
 
-## The system must support multi-user collaboration and version control for complex projects.
+The system must enable seamless integration of harness designs with other vehicle systems (e.g., ECUs, sensors, actuators) and communication networks (e.g., CAN, LIN, Ethernet).
+```
+
+```{preq} REQ-PROD-AE-004
+:status: Draft
+:importance: Medium
+:tags: documentation, traceability
+:related_stories: story:AutomotiveEngineer
+
+Traceability and Documentation
+
+The system must provide comprehensive documentation and traceability from requirements to design, testing, and validation.
+```
+
+```{preq} REQ-PROD-AE-005
+:status: Draft
+:importance: Medium
+:tags: collaboration
+:related_stories: story:AutomotiveEngineer
+
+Collaboration Support
+
+The system must support multi-user collaboration and version control for complex projects.
+```

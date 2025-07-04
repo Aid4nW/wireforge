@@ -36,7 +36,9 @@ html_static_path = ['_static']
 
 # -- Options for sphinx-needs ------------------------------------------------
 needs_types = [
-    dict(directive="req", title="Requirement", prefix="REQ_", color="#BFD8D2", style="node"),
+    dict(directive="preq", title="Product Requirement", prefix="REQ-PROD-", color="#FFCCBC", style="node"),
+    dict(directive="freq", title="Functional Requirement", prefix="REQ-FUNC-", color="#B2EBF2", style="node"),
+    dict(directive="nfreq", title="Non-Functional Requirement", prefix="REQ-NON-", color="#DCEDC8", style="node"),
     dict(directive="spec", title="Specification", prefix="SPEC_", color="#FED8B1", style="node"),
     dict(directive="impl", title="Implementation", prefix="IMPL_", color="#DAEDF2", style="node"),
     dict(directive="test", title="Test", prefix="TEST_", color="#DCB2BE", style="node"),
