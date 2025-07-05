@@ -71,3 +71,4 @@ needs_id_required = True
 needs_id_from_title = False
 needs_id_padding = 3
 needs_id_prefix = ''
+needs_build_json = True

@@ -7,7 +7,7 @@ Performance
    :status: Draft
    :importance: High
    :tags: performance, canvas
-   :satisfies: REQ-PROD-MS-002
+   :satisfies: REQ-PROD-MS-002, REQ-PROD-CS-002
    
 
    The design canvas must remain responsive and smooth, even with complex harness designs.

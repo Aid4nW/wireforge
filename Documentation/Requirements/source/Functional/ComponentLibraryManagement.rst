@@ -22,7 +22,7 @@ Component Library Management
    :status: Draft
    :importance: Medium
    :tags: library, components, custom
-   :satisfies: REQ-PROD-CRS-002
+   :satisfies: REQ-PROD-CRS-002, REQ-PROD-CS-003
    
 
    Users must be able to create their own custom components and add them to a personal library.

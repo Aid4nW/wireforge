@@ -10,3 +10,4 @@ This section details the functional requirements for the WireForge project, desc
    HarnessDesignCanvas.rst
    ComponentLibraryManagement.rst
    BOMGeneration.rst
+   CollaborationFeatures.rst
