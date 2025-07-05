@@ -44,7 +44,7 @@ needs_types = [
 ]
 
 needs_extra_options = ['importance', 'related_stories']
-needs_id_regex = r'^REQ-[A-Z]{4}-[A-Z]{2}-\d{3}'
+needs_id_regex = r'^REQ-[A-Z]{3,4}-[A-Z]{2,3}-\d{3}'
 
 needs_id_required = True
 needs_id_from_title = False

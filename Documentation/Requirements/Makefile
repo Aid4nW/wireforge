@@ -85,17 +85,7 @@ pickle:
 changes:
 	$(SPHINXBUILD) -b changes $(SOURCEDIR) $(BUILDDIR)/changes $(SPHINXOPTS) $(O)
 
-.PHONY: epub
-epub:
-	$(SPHINXBUILD) -b epub $(SOURCEDIR) $(BUILDDIR)/epub $(SPXINXOPTS) $(O)
 
-.PHONY: html
-html:
-	$(SPHINXBUILD) -b html $(SOURCEDIR) $(BUILDDIR)/html $(SPHINXOPTS) $(O)
-
-.PHONY: clean
-clean:
-	rm -rf $(BUILDDIR)
 
 .PHONY: help
 help:

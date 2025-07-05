@@ -15,5 +15,4 @@ This section details the various requirements for the WireForge project, categor
 .. needtable::
    :columns: id, title, status, priority, links
    :style: table
-   :sort: id asc
    :filter: status != 'rejected'
