@@ -20,7 +20,6 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinx_needs',
-    'myst_parser',
 ]
 
 templates_path = ['_templates']
@@ -45,7 +44,8 @@ needs_types = [
 ]
 
 needs_extra_options = ['importance', 'related_stories']
-needs_id_regex = r'^[A-Z]{3}-[A-Z]{3}-[A-Z]{3}-\d{3}$'
+needs_id_regex = r'^REQ-[A-Z]{4}-[A-Z]{2}-\d{3}'
+
 needs_id_required = True
 needs_id_from_title = False
 needs_id_padding = 3
