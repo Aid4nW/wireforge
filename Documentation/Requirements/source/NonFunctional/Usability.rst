@@ -7,7 +7,7 @@ Usability
    :status: Draft
    :importance: High
    :tags: usability, UI
-   :related_stories: story:DIYHobbyist
+   
 
    The user interface must be intuitive and easy to learn, especially for users who are not experts in CAD software.
 
@@ -21,7 +21,7 @@ Usability
    :status: Draft
    :importance: Medium
    :tags: usability, accessibility
-   :related_stories: story:Educator
+   
 
    The application should be accessible to users with disabilities.
 

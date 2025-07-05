@@ -7,7 +7,7 @@ Security
    :status: Draft
    :importance: High
    :tags: security, authentication
-   :related_stories: story:OpenSourceAdvocate
+
 
    The system must provide secure user authentication to protect user data.
 
@@ -21,7 +21,7 @@ Security
    :status: Draft
    :importance: High
    :tags: security, privacy
-   :related_stories: story:OpenSourceAdvocate
+
 
    User data, including harness designs, must be kept private and secure.
 

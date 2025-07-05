@@ -7,7 +7,7 @@ Performance
    :status: Draft
    :importance: High
    :tags: performance, canvas
-   :related_stories: story:AutomotiveEngineer, story:MotorsportShop
+   
 
    The design canvas must remain responsive and smooth, even with complex harness designs.
 
@@ -21,7 +21,7 @@ Performance
    :status: Draft
    :importance: High
    :tags: performance, loading
-   :related_stories: story:DIYHobbyist
+   
 
    The application should load quickly in the user's browser.
 

@@ -7,7 +7,7 @@ Component Library Management
    :status: Draft
    :importance: High
    :tags: library, components
-   :related_stories: story:DIYHobbyist
+   
 
    The system must provide a pre-populated library of common automotive components (connectors, sensors, etc.).
 
@@ -21,7 +21,7 @@ Component Library Management
    :status: Draft
    :importance: Medium
    :tags: library, components, custom
-   :related_stories: story:CustomRestorationShop
+   
 
    Users must be able to create their own custom components and add them to a personal library.
 

@@ -7,7 +7,7 @@ BOM Generation
    :status: Draft
    :importance: High
    :tags: bom, manufacturing
-   :related_stories: story:MotorsportShop
+   
 
    The system must automatically generate a Bill of Materials (BOM) for a harness design.
 
@@ -21,7 +21,7 @@ BOM Generation
    :status: Draft
    :importance: Medium
    :tags: bom, customization
-   :related_stories: story:CustomRestorationShop
+   
 
    Users should be able to customize the format and content of the BOM.
 
