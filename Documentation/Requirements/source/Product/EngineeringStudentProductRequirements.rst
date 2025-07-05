@@ -7,7 +7,7 @@ Engineering Student Product Requirements
    :status: Draft
    :importance: Medium
    :tags: competition, design
-   :related_stories: story:EngineeringStudent
+   :related_stories: STORY-ES-001
 
    The system must enable the design of a lightweight, robust, and rules-compliant wiring harness for their team's vehicle.
 
@@ -16,7 +16,7 @@ Engineering Student Product Requirements
    :status: Draft
    :importance: Medium
    :tags: education, application
-   :related_stories: story:EngineeringStudent
+   :related_stories: STORY-ES-002
 
    The system must help bridge the gap between classroom theory (circuit analysis, signal processing) and real-world application.
 
@@ -25,7 +25,7 @@ Engineering Student Product Requirements
    :status: Draft
    :importance: Medium
    :tags: collaboration
-   :related_stories: story:EngineeringStudent
+   :related_stories: STORY-ES-001
 
    The system must facilitate seamless collaboration among team members, allowing them to share design files and documentation.
 
@@ -34,6 +34,6 @@ Engineering Student Product Requirements
    :status: Draft
    :importance: Medium
    :tags: learning, innovation
-   :related_stories: story:EngineeringStudent
+   :related_stories: STORY-ES-001
 
    The system must support learning industry-standard practices and innovative solutions to gain a competitive edge.

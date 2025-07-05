@@ -7,7 +7,7 @@ DIY Hobbyist Product Requirements
    :status: Draft
    :importance: Medium
    :tags: safety, reliability
-   :related_stories: story:DIYHobbyist
+   :related_stories: STORY-DIY-001
 
    The system must enable the DIY hobbyist to build a custom wiring harness that is functional, safe, and won't leave them stranded.
 
@@ -16,7 +16,7 @@ DIY Hobbyist Product Requirements
    :status: Draft
    :importance: Medium
    :tags: cost
-   :related_stories: story:DIYHobbyist
+   :related_stories: STORY-DIY-002
 
    The system must help DIY hobbyists avoid the high costs associated with professional-grade software or paying a specialist to design and build the harness.
 
@@ -25,7 +25,7 @@ DIY Hobbyist Product Requirements
    :status: Draft
    :importance: Medium
    :tags: learning, accomplishment
-   :related_stories: story:DIYHobbyist
+   :related_stories: STORY-DIY-003
 
    The system must provide the satisfaction of learning a new skill and successfully completing a complex part of their project themselves.
 
@@ -34,6 +34,6 @@ DIY Hobbyist Product Requirements
    :status: Draft
    :importance: Medium
    :tags: usability, simplicity
-   :related_stories: story:DIYHobbyist
+   :related_stories: STORY-DIY-001
 
    The system must be intuitive and not require a steep learning curve to get started.

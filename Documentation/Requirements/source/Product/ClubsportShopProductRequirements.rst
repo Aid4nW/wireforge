@@ -7,7 +7,7 @@ Clubsport Shop Product Requirements
    :status: Draft
    :importance: Medium
    :tags: reliability, motorsport
-   :related_stories: story:ClubsportShop
+   :related_stories: STORY-CS-001
 
    The system must enable the design of harnesses that can withstand the rigors of track use—higher heat, more vibration, and greater stress than street driving—to ensure clients' cars are safe and dependable.
 
@@ -16,7 +16,7 @@ Clubsport Shop Product Requirements
    :status: Draft
    :importance: Medium
    :tags: performance, cost
-   :related_stories: story:ClubsportShop
+   :related_stories: STORY-CS-003
 
    The system must support the creation of high-quality, performance-oriented solutions while remaining mindful of budget constraints.
 
@@ -25,7 +25,7 @@ Clubsport Shop Product Requirements
    :status: Draft
    :importance: Medium
    :tags: standardization, efficiency
-   :related_stories: story:ClubsportShop
+   :related_stories: STORY-CS-001
 
    The system must facilitate the development of standardized, repeatable wiring packages to improve efficiency and ensure consistent quality across builds.
 
@@ -34,6 +34,6 @@ Clubsport Shop Product Requirements
    :status: Draft
    :importance: Medium
    :tags: documentation, serviceability
-   :related_stories: story:ClubsportShop
+   :related_stories: STORY-CS-002
 
    The system must enable the creation of clear documentation for technicians and clients to use for building and trackside diagnosis and maintenance.

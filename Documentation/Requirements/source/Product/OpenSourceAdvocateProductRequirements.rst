@@ -7,7 +7,7 @@ Open-Source Advocate Product Requirements
    :status: Draft
    :importance: Medium
    :tags: open-source
-   :related_stories: story:OpenSourceAdvocate
+   :related_stories: STORY-OSA-001
 
    The system must be open-source, allowing users the freedom to use, inspect, modify, and distribute it.
 
@@ -16,7 +16,7 @@ Open-Source Advocate Product Requirements
    :status: Draft
    :importance: Medium
    :tags: open-data
-   :related_stories: story:OpenSourceAdvocate
+   :related_stories: STORY-OSA-001
 
    The system must use open data formats for designs to avoid vendor lock-in.
 
@@ -25,7 +25,7 @@ Open-Source Advocate Product Requirements
    :status: Draft
    :importance: Medium
    :tags: contribution, open-source
-   :related_stories: story:OpenSourceAdvocate
+   :related_stories: STORY-OSA-001
 
    The system must facilitate contributions and improvements from users, whether by fixing bugs, adding new features, or improving documentation.
 
@@ -34,6 +34,6 @@ Open-Source Advocate Product Requirements
    :status: Draft
    :importance: Medium
    :tags: extensibility, API
-   :related_stories: story:OpenSourceAdvocate
+   :related_stories: STORY-OSA-002
 
    The system must provide the ability to script, automate, or extend its functionality to fit specific workflows, for example, through plugins or APIs.

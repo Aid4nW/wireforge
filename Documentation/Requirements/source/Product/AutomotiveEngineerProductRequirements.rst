@@ -7,7 +7,7 @@ Automotive Engineer Product Requirements
    :status: Draft
    :importance: Medium
    :tags: safety
-   :related_stories: story:AutomotiveEngineer
+   :related_stories: STORY-AE-001, STORY-AE-003
 
    The system must enable the design of wiring harnesses that meet stringent functional safety requirements and prevent hazards.
 
@@ -16,7 +16,7 @@ Automotive Engineer Product Requirements
    :status: Draft
    :importance: Medium
    :tags: cost, manufacturing
-   :related_stories: story:AutomotiveEngineer
+   :related_stories: STORY-AE-004
 
    The system must support the design of harnesses that are efficient to produce, minimize material waste, and reduce overall vehicle cost.
 
@@ -25,7 +25,7 @@ Automotive Engineer Product Requirements
    :status: Draft
    :importance: Medium
    :tags: integration
-   :related_stories: story:AutomotiveEngineer
+   :related_stories: STORY-AE-001
 
    The system must enable seamless integration of harness designs with other vehicle systems (e.g., ECUs, sensors, actuators) and communication networks (e.g., CAN, LIN, Ethernet).
 
@@ -34,7 +34,7 @@ Automotive Engineer Product Requirements
    :status: Draft
    :importance: Medium
    :tags: documentation, traceability
-   :related_stories: story:AutomotiveEngineer
+   :related_stories: STORY-AE-004
 
    The system must provide comprehensive documentation and traceability from requirements to design, testing, and validation.
 
@@ -43,6 +43,6 @@ Automotive Engineer Product Requirements
    :status: Draft
    :importance: Medium
    :tags: collaboration
-   :related_stories: story:AutomotiveEngineer
+   :related_stories: STORY-AE-001
 
    The system must support multi-user collaboration and version control for complex projects.
