@@ -1,6 +1,6 @@
-##################################
-Motorsport Shop Product Requirements 
-##################################
+####################################
+Motorsport Shop Product Requirements
+####################################
 
 .. preq:: Flawless Reliability
    :id: REQ-PROD-MS-001

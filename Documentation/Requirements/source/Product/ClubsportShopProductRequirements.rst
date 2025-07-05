@@ -1,6 +1,6 @@
-##################################
-Clubsport Shop Product Requirements 
-##################################
+###################################
+Clubsport Shop Product Requirements
+###################################
 
 .. preq:: Track-Ready Reliability
    :id: REQ-PROD-CS-001

@@ -1,6 +1,6 @@
-######################################
-Open-Source Advocate Product Requirements 
-######################################
+#########################################
+Open-Source Advocate Product Requirements
+#########################################
 
 .. preq:: FOSS Tool Utilization
    :id: REQ-PROD-OSA-001
