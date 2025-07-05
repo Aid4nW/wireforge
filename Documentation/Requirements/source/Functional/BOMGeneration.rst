@@ -7,6 +7,7 @@ BOM Generation
    :status: Draft
    :importance: High
    :tags: bom, manufacturing
+   :satisfies: REQ-PROD-MS-003
    
 
    The system must automatically generate a Bill of Materials (BOM) for a harness design.
@@ -21,6 +22,7 @@ BOM Generation
    :status: Draft
    :importance: Medium
    :tags: bom, customization
+   :satisfies: REQ-PROD-CRS-002
    
 
    Users should be able to customize the format and content of the BOM.

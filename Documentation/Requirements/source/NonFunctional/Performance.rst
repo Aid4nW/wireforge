@@ -7,6 +7,7 @@ Performance
    :status: Draft
    :importance: High
    :tags: performance, canvas
+   :satisfies: REQ-PROD-MS-002
    
 
    The design canvas must remain responsive and smooth, even with complex harness designs.
@@ -21,6 +22,7 @@ Performance
    :status: Draft
    :importance: High
    :tags: performance, loading
+   :satisfies: REQ-PROD-DIY-004
    
 
    The application should load quickly in the user's browser.

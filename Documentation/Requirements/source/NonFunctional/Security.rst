@@ -7,6 +7,7 @@ Security
    :status: Draft
    :importance: High
    :tags: security, authentication
+   :satisfies: REQ-PROD-OSA-001
 
 
    The system must provide secure user authentication to protect user data.
@@ -21,6 +22,7 @@ Security
    :status: Draft
    :importance: High
    :tags: security, privacy
+   :satisfies: REQ-PROD-OSA-002
 
 
    User data, including harness designs, must be kept private and secure.

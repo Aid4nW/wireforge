@@ -7,6 +7,7 @@ Harness Design Canvas
    :status: Draft
    :importance: High
    :tags: canvas, usability
+   :satisfies: REQ-PROD-DIY-004
    
 
    Users must be able to visually drag and drop components onto a design canvas.
@@ -21,6 +22,7 @@ Harness Design Canvas
    :status: Draft
    :importance: High
    :tags: canvas, core
+   :satisfies: REQ-PROD-AE-001
    
 
    Users must be able to draw wires to create logical connections between component pins.
@@ -35,6 +37,7 @@ Harness Design Canvas
    :status: Draft
    :importance: Medium
    :tags: canvas, motorsport
+   :satisfies: REQ-PROD-MS-001
    
 
    The system must support the design of advanced harness features like service loops and concentric twisting.

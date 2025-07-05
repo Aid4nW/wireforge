@@ -7,6 +7,7 @@ Component Library Management
    :status: Draft
    :importance: High
    :tags: library, components
+   :satisfies: REQ-PROD-DIY-004
    
 
    The system must provide a pre-populated library of common automotive components (connectors, sensors, etc.).
@@ -21,6 +22,7 @@ Component Library Management
    :status: Draft
    :importance: Medium
    :tags: library, components, custom
+   :satisfies: REQ-PROD-CRS-002
    
 
    Users must be able to create their own custom components and add them to a personal library.

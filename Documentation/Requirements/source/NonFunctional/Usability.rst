@@ -7,6 +7,7 @@ Usability
    :status: Draft
    :importance: High
    :tags: usability, UI
+   :satisfies: REQ-PROD-DIY-004
    
 
    The user interface must be intuitive and easy to learn, especially for users who are not experts in CAD software.
@@ -21,6 +22,7 @@ Usability
    :status: Draft
    :importance: Medium
    :tags: usability, accessibility
+   :satisfies: REQ-PROD-EDU-001
    
 
    The application should be accessible to users with disabilities.
