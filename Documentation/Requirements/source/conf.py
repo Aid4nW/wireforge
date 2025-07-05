@@ -44,7 +44,18 @@ needs_types = [
     dict(directive="story", title="User Story", prefix="STORY-", color="#FFF2CC", style="node"),
 ]
 
-needs_extra_options = ['importance', 'related_stories']
+needs_extra_options = ['importance']
+needs_extra_links = [
+    {
+        "option": "related_stories",
+        "directive": "story",
+        "title": "Related Stories",
+        "incoming": "Is related to",
+        "outgoing": "Relates to",
+        "style": "dot",
+        "classes": ["related_stories"],
+    },
+]
 needs_id_regex = r'^(REQ-[A-Z]{3,4}-[A-Z]{2,3}-\d{3}|STORY-[A-Z]{2,4}-\d{3})'
 
 needs_id_required = True
