@@ -11,6 +11,7 @@ This section details the various requirements for the WireForge project, categor
    Product/index.rst
    Functional/index.rst
    NonFunctional/index.rst
+   UserStories/index.rst
 
 .. needtable::
    :columns: id, title, status, priority, links

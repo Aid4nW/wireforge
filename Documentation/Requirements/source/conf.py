@@ -41,12 +41,13 @@ needs_types = [
     dict(directive="spec", title="Specification", prefix="SPEC_", color="#FED8B1", style="node"),
     dict(directive="impl", title="Implementation", prefix="IMPL_", color="#DAEDF2", style="node"),
     dict(directive="test", title="Test", prefix="TEST_", color="#DCB2BE", style="node"),
+    dict(directive="story", title="User Story", prefix="STORY-", color="#FFF2CC", style="node"),
 ]
 
 needs_extra_options = ['importance', 'related_stories']
-needs_id_regex = r'^REQ-[A-Z]{3,4}-[A-Z]{2,3}-\d{3}'
+needs_id_regex = r'^(REQ-[A-Z]{3,4}-[A-Z]{2,3}-\d{3}|STORY-[A-Z]{2,4}-\d{3})'
 
 needs_id_required = True
 needs_id_from_title = False
 needs_id_padding = 3
-needs_id_prefix = 'REQ_'
+needs_id_prefix = ''
