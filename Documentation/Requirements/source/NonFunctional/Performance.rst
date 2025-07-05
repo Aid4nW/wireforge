@@ -2,13 +2,12 @@
 Performance
 #############
 
-.. nfreq:: REQ-NON-PER-001
+.. nfreq:: Responsive Canvas
+   :id: REQ-NON-PER-001
    :status: Draft
    :importance: High
    :tags: performance, canvas
    :related_stories: story:AutomotiveEngineer, story:MotorsportShop
-
-   Responsive Canvas
 
    The design canvas must remain responsive and smooth, even with complex harness designs.
 
@@ -17,13 +16,12 @@ Performance
    *   Actions like moving components or drawing wires have no noticeable lag.
    *   The application can handle designs with hundreds of components and connections without significant performance degradation.
 
-.. nfreq:: REQ-NON-PER-002
+.. nfreq:: Fast Application Loading
+   :id: REQ-NON-PER-002
    :status: Draft
    :importance: High
    :tags: performance, loading
    :related_stories: story:DIYHobbyist
-
-   Fast Application Loading
 
    The application should load quickly in the user's browser.
 

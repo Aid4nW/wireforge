@@ -2,13 +2,12 @@
 Component Library Management
 ##############################
 
-.. freq:: REQ-FUNC-LIB-001
+.. freq:: Pre-populated Component Library
+   :id: REQ-FUNC-LIB-001
    :status: Draft
    :importance: High
    :tags: library, components
    :related_stories: story:DIYHobbyist
-
-   Pre-populated Component Library
 
    The system must provide a pre-populated library of common automotive components (connectors, sensors, etc.).
 
@@ -17,13 +16,12 @@ Component Library Management
    *   The library includes a variety of commonly used automotive parts.
    *   Users can browse or search the library to find components.
 
-.. freq:: REQ-FUNC-LIB-002
+.. freq:: Custom Component Creation
+   :id: REQ-FUNC-LIB-002
    :status: Draft
    :importance: Medium
    :tags: library, components, custom
    :related_stories: story:CustomRestorationShop
-
-   Custom Component Creation
 
    Users must be able to create their own custom components and add them to a personal library.
 

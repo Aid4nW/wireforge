@@ -2,13 +2,12 @@
 Harness Design Canvas
 #######################
 
-.. freq:: REQ-FUNC-CAN-001
+.. freq:: Visual Component Placement
+   :id: REQ-FUNC-CAN-001
    :status: Draft
    :importance: High
    :tags: canvas, usability
    :related_stories: story:DIYHobbyist
-
-   Visual Component Placement
 
    Users must be able to visually drag and drop components onto a design canvas.
 
@@ -17,13 +16,12 @@ Harness Design Canvas
    *   Users can select a component from the library and place it on the canvas.
    *   Components on the canvas can be moved to new positions.
 
-.. freq:: REQ-FUNC-CAN-002
+.. freq:: Wire and Connection Drawing
+   :id: REQ-FUNC-CAN-002
    :status: Draft
    :importance: High
    :tags: canvas, core
    :related_stories: story:AutomotiveEngineer, story:DIYHobbyist
-
-   Wire and Connection Drawing
 
    Users must be able to draw wires to create logical connections between component pins.
 
@@ -32,13 +30,12 @@ Harness Design Canvas
    *   Users can draw a line to a pin on another (or the same) component to complete a connection.
    *   The system visually represents the wire connecting the two pins.
 
-.. freq:: REQ-FUNC-CAN-003
+.. freq:: Advanced Harness Features
+   :id: REQ-FUNC-CAN-003
    :status: Draft
    :importance: Medium
    :tags: canvas, motorsport
    :related_stories: story:MotorsportShop
-
-   Advanced Harness Features
 
    The system must support the design of advanced harness features like service loops and concentric twisting.
 
