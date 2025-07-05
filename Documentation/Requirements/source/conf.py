@@ -55,6 +55,15 @@ needs_extra_links = [
         "style": "dot",
         "classes": ["related_stories"],
     },
+    {
+        "option": "satisfies",
+        "directive": "preq",
+        "title": "Satisfies",
+        "incoming": "Is satisfied by",
+        "outgoing": "Satisfies",
+        "style": "dot",
+        "classes": ["satisfies"],
+    },
 ]
 needs_id_regex = r'^(REQ-[A-Z]{3,4}-[A-Z]{2,3}-\d{3}|STORY-[A-Z]{2,4}-\d{3})'
 
