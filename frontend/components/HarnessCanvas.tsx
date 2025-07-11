@@ -4,6 +4,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { saveDesignToLocalStorage } from '../utils/localStorage';
 
+// Extend the Window interface to include harnessState for Cypress testing
+declare global {
+  interface Window {
+    harnessState?: { components: Component[]; wires: Wire[] };
+  }
+}
+
 interface Pin {
   id: string;
   xOffset: number;
@@ -37,6 +44,12 @@ import { Stage, Layer, Rect, Text, Circle, Line, Group } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 
 const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires }) => {
+  // Expose state for Cypress testing
+  useEffect(() => {
+    if (window.Cypress) {
+      window.harnessState = { components, wires };
+    }
+  }, [components, wires]);
   const [drawingWire, setDrawingWire] = useState(false);
   const [startPin, setStartPin] = useState<{ componentId: string, pinId: string, x: number, y: number } | null>(null);
   const [currentMousePos, setCurrentMousePos] = useState<{ x: number, y: number } | null>(null);
@@ -183,6 +196,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
       }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      data-testid="harness-canvas-wrapper"
     >
       <button
         onClick={() => saveDesignToLocalStorage(components, wires)}
@@ -255,7 +269,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
                 />
               ))}
             </Group>
-          ))}
+            ))}
 
           {/* Draw temporary wire */}
           {drawingWire && startPin && currentMousePos && (

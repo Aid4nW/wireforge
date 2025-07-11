@@ -197,3 +197,7 @@ npm-debug.log*
 # Production
 build/
 
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/

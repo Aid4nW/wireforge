@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --ci"
+    "test": "jest --ci",
+    "cypress:open": "cypress open",
+    "cypress:run": "npx wait-on http://localhost:3000 && cypress run"
   },
   "keywords": [],
   "author": "",
@@ -35,8 +37,10 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "babel-jest": "^30.0.4",
+    "cypress": "^14.5.1",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
-    "ts-jest": "^29.4.0"
+    "ts-jest": "^29.4.0",
+    "wait-on": "^7.2.0"
   }
 }

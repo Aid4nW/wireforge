@@ -48,20 +48,33 @@ describe('HarnessCanvas', () => {
   };
 
   // Mock useRef and useEffect to control stageDimensions and stageRef
-  let mockStageRef = { current: null };
-  let mockStageDimensions = { width: 800, height: 600 };
-
-  jest.spyOn(React, 'useRef').mockReturnValue(mockStageRef);
-  jest.spyOn(React, 'useEffect').mockImplementation((cb) => cb());
+  let mockStageRef: { current: any };
+  let mockContainerRef: { current: any };
 
   beforeEach(() => {
     // Reset mocks before each test
     mockSetComponents.mockClear();
     mockSetWires.mockClear();
-    mockStageRef.current = {
-      getPointerPosition: jest.fn(() => ({ x: 100, y: 150 })),
+
+    mockStageRef = {
+      current: {
+        getPointerPosition: jest.fn(() => ({ x: 100, y: 150 })),
+      },
     };
-    mockStageDimensions = { width: 800, height: 600 };
+    mockContainerRef = {
+      current: {
+        offsetWidth: 800,
+        offsetHeight: 600,
+        getBoundingClientRect: () => ({ left: 0, top: 0, width: 800, height: 600, x: 0, y: 0, right: 800, bottom: 600 }),
+      },
+    };
+
+    // Mock useRef calls in the order they appear in HarnessCanvas
+    jest.spyOn(React, 'useRef')
+      .mockReturnValueOnce(mockContainerRef) // First call is for containerRef
+      .mockReturnValueOnce(mockStageRef);    // Second call is for stageRef
+
+    jest.spyOn(React, 'useEffect').mockImplementation((cb) => cb());
   });
 
   it('renders without crashing', () => {
@@ -73,7 +86,7 @@ describe('HarnessCanvas', () => {
 
   it('adds a new component on drop', () => { // REQ-FUNC-CAN-001
     const { container } = render(<HarnessCanvas {...defaultProps} />);
-    const canvasWrapper = container.querySelector('div[data-testid="konva-stage"]');
+    const canvasWrapper = screen.getByTestId('harness-canvas-wrapper');
 
     if (!canvasWrapper) {
       throw new Error('Canvas wrapper not found');
@@ -86,8 +99,18 @@ describe('HarnessCanvas', () => {
       }),
     };
 
+    const dropEvent = new MouseEvent('drop', {
+      bubbles: true,
+      cancelable: true,
+      clientX: 100,
+      clientY: 150,
+    });
+    Object.defineProperty(dropEvent, 'dataTransfer', {
+      value: dataTransfer,
+    });
+
     act(() => {
-      fireEvent.drop(canvasWrapper, { dataTransfer, clientX: 100, clientY: 150 });
+      fireEvent(canvasWrapper, dropEvent);
     });
 
     expect(mockSetComponents).toHaveBeenCalledTimes(1);

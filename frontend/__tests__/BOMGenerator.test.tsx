@@ -19,6 +19,11 @@ describe('BOMGenerator', () => {
     mockBlob.mockClear(); // Clear mock calls before each test
   });
 
+  it('renders without crashing', () => {
+    render(<BOMGenerator components={[]} wires={[]} />);
+    expect(screen.getByText('Bill of Materials')).toBeInTheDocument();
+  });
+
   it('generates a CSV with correct component and wire counts', async () => {
     const components = [
       { id: 'c1', type: 'Connector A', x: 0, y: 0, pins: [] },
