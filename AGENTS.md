@@ -57,6 +57,21 @@ Key aspects include:
 *   **Start Small:** Break down large tasks into smaller, manageable steps.
 *   **Test Your Changes:** Ensure that your changes do not break existing functionality.
 
+## Typical Agent Workflow
+
+When performing development tasks, follow this general workflow:
+
+1.  **Analyze:** Use `read_file`, `search_file_content`, and `glob` to understand the codebase, existing patterns, and conventions relevant to the task.
+2.  **Plan:** Formulate a clear plan of action. If it's a significant change, consider outlining it to the user.
+3.  **Implement Changes:** Use `write_file` and `replace` to modify code or create new files.
+4.  **Run Linting:** After making code changes, always run `npm run lint` (from the `frontend` directory) to ensure code quality and adherence to standards. Fix any reported errors.
+5.  **Run Tests:** Execute `npm test` (from the `frontend` directory) to verify that changes haven't introduced regressions and that new functionalities are working as expected.
+6.  **Manage Server (if applicable):**
+    *   **Stop Server:** If a development server is running, stop it using `lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs kill` (assuming port 3000). If this fails, try `pkill -f "node_modules/next/dist/bin/next"`.
+    *   **Clear Cache (if needed):** If encountering `ENOENT` errors, delete the `.next` directory (`rm -rf .next` in the `frontend` directory).
+    *   **Start Server:** Start the development server in the background using `npm run dev &` (from the `frontend` directory).
+7.  **Verify Manually:** If the task involves UI changes, instruct the user to manually verify the changes in the browser.
+
 ## Common Development Issues and Solutions
 
 *   **Recurring `ENOENT` error with Next.js:** If you encounter `ENOENT: no such file or directory, open '/Users/entity/Local Documents/git/wireforge/frontend/.next/server/pages/_document.js'`, it often indicates a corrupted Next.js build cache. The current workaround is to delete the `.next` directory (`rm -rf .next` in the `frontend` directory) and restart the development server.
