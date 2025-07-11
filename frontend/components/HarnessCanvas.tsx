@@ -1,7 +1,7 @@
 // REQ-FUNC-CAN-001: Visual Component Placement
 // REQ-FUNC-CAN-002: Wire and Connection Drawing
 // REQ-FUNC-LIB-001: Pre-populated Component Library (handling dropped components)
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface Pin {
   id: string;
@@ -32,6 +32,8 @@ interface HarnessCanvasProps {
   setWires: React.Dispatch<React.SetStateAction<Wire[]>>;
 }
 
+import { Stage, Layer, Rect, KonvaEventObject, Text, Circle, Line, Group } from 'react-konva';
+
 const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires }) => {
   const [drawingWire, setDrawingWire] = useState(false);
   const [startPin, setStartPin] = useState<{ componentId: string, pinId: string, x: number, y: number } | null>(null);
@@ -39,6 +41,21 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
   const [isDraggingComponent, setIsDraggingComponent] = useState(false);
   const [draggedComponentId, setDraggedComponentId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number, y: number } | null>(null);
+  const [stageDimensions, setStageDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setStageDimensions({
+        width: containerRef.current.offsetWidth,
+        height: containerRef.current.offsetHeight,
+      });
+    }
+  }, []);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -46,10 +63,19 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const componentType = e.dataTransfer.getData('component/type');
-    const canvasRect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - canvasRect.left;
-    const y = e.clientY - canvasRect.top;
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    // Get the bounding rectangle of the container div
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (!containerRect) return;
+
+    // Calculate the drop position relative to the container div
+    const x = e.clientX - containerRect.left;
+    const y = e.clientY - containerRect.top;
+
+    const componentType = e.dataTransfer?.getData('component/type');
+    if (!componentType) return;
 
     // Define pins based on component type (simple example)
     let newPins: Pin[] = [];
@@ -100,10 +126,14 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const canvasRect = e.currentTarget.getBoundingClientRect();
-    const mouseX = e.clientX - canvasRect.left;
-    const mouseY = e.clientY - canvasRect.top;
+  const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const pointerPosition = stage.getPointerPosition();
+    if (!pointerPosition) return;
+
+    const mouseX = pointerPosition.x;
+    const mouseY = pointerPosition.y;
 
     if (drawingWire) {
       setCurrentMousePos({
@@ -111,30 +141,21 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
         y: mouseY,
       });
     } else if (isDraggingComponent && draggedComponentId && dragOffset) {
-      setComponents((prevComponents) =>
-        prevComponents.map((comp) =>
-          comp.id === draggedComponentId
-            ? { ...comp, x: mouseX - dragOffset.x, y: mouseY - dragOffset.y }
-            : comp
-        )
-      );
+      // This logic is now handled by Konva's draggable property on the Group component
+      // The onDragEnd event updates the component's position in state
     }
   };
 
-  const handleMouseDownOnComponent = (e: React.MouseEvent<HTMLDivElement>, component: Component) => {
+  const handleMouseDownOnComponent = (e: KonvaEventObject<MouseEvent>, component: Component) => {
     // Only start dragging if not drawing a wire and not clicking on a pin
-    if (!drawingWire && !(e.target as HTMLElement).classList.contains('pin')) {
+    if (!drawingWire && !(e.target as any)._isPin) {
       setIsDraggingComponent(true);
       setDraggedComponentId(component.id);
-      const componentRect = (e.target as HTMLElement).getBoundingClientRect();
-      setDragOffset({
-        x: e.clientX - componentRect.left,
-        y: e.clientY - componentRect.top,
-      });
+      // Konva handles the drag offset automatically when draggable is true
     }
   };
 
-  const handleMouseUpOnCanvas = () => {
+  const handleMouseUpOnCanvas = (e: KonvaEventObject<MouseEvent>) => {
     setIsDraggingComponent(false);
     setDraggedComponentId(null);
     setDragOffset(null);
@@ -150,86 +171,97 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
 
   return (
     <div
+      ref={containerRef}
       style={{
         border: '1px solid black',
         width: '100%',
         height: '500px',
         position: 'relative',
         overflow: 'hidden',
-        cursor: isDraggingComponent ? 'grabbing' : 'default',
       }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUpOnCanvas}
     >
-      <h2>Harness Design Canvas</h2>
-      {components.map((comp) => (
-        <div
-          key={comp.id}
-          style={{
-            position: 'absolute',
-            left: comp.x,
-            top: comp.y,
-            border: '1px solid blue',
-            padding: '5px',
-            backgroundColor: 'lightblue',
-            cursor: isDraggingComponent && draggedComponentId === comp.id ? 'grabbing' : 'grab',
-          }}
-          onMouseDown={(e) => handleMouseDownOnComponent(e, comp)}
-        >
-          {comp.type}
-          {comp.pins.map((pin) => (
-            <div
-              key={comp.id + '-' + pin.id}
-              className="pin" // Add a class to identify pins
-              style={{
-                position: 'absolute',
-                left: pin.xOffset,
-                top: pin.yOffset,
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: 'red',
-                cursor: 'pointer',
+      <Stage
+        ref={stageRef}
+        width={stageDimensions.width}
+        height={stageDimensions.height}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOnCanvas}
+      >
+        <Layer>
+          <Text text="Harness Design Canvas" x={10} y={10} fontSize={20} fill="black" />
+          {components.map((comp) => (
+            <Group
+              key={comp.id}
+              x={comp.x}
+              y={comp.y}
+              draggable
+              onDragStart={(e) => handleMouseDownOnComponent(e, comp)}
+              onDragEnd={(e) => {
+                setIsDraggingComponent(false);
+                setDraggedComponentId(null);
+                setDragOffset(null);
+                const node = e.target;
+                setComponents((prevComponents) =>
+                  prevComponents.map((c) =>
+                    c.id === comp.id
+                      ? { ...c, x: node.x(), y: node.y() }
+                      : c
+                  )
+                );
               }}
-              onClick={() => handlePinClick(comp.id, pin, comp.x, comp.y)}
-            />
+            >
+              <Rect
+                width={100} // Placeholder width
+                height={50} // Placeholder height
+                fill="lightblue"
+                stroke="blue"
+                strokeWidth={1}
+              />
+              <Text text={comp.type} x={5} y={5} />
+              {comp.pins.map((pin) => (
+                <Circle
+                  key={comp.id + '-' + pin.id}
+                  x={pin.xOffset}
+                  y={pin.yOffset}
+                  radius={4}
+                  fill="red"
+                  stroke="black"
+                  strokeWidth={1}
+                  onClick={() => handlePinClick(comp.id, pin, comp.x, comp.y)}
+                  onTap={() => handlePinClick(comp.id, pin, comp.x, comp.y)}
+                  // Custom property to identify pins for drag logic
+                  _isPin={true}
+                />
+              ))}
+            </Group>
           ))}
-        </div>
-      ))}
 
-      {/* Draw temporary wire */}
-      {drawingWire && startPin && currentMousePos && (
-        <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-          <line
-            x1={startPin.x}
-            y1={startPin.y}
-            x2={currentMousePos.x}
-            y2={currentMousePos.y}
-            stroke="red"
-            strokeWidth="2"
-          />
-        </svg>
-      )}
-
-      {/* Draw permanent wires */}
-      {wires.map((wire) => {
-        const startPos = getPinAbsolutePosition(wire.startComponentId, wire.startPinId);
-        const endPos = getPinAbsolutePosition(wire.endComponentId, wire.endPinId);
-        return (
-          <svg key={wire.id} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-            <line
-              x1={startPos.x}
-              y1={startPos.y}
-              x2={endPos.x}
-              y2={endPos.y}
-              stroke="green"
-              strokeWidth="2"
+          {/* Draw temporary wire */}
+          {drawingWire && startPin && currentMousePos && (
+            <Line
+              points={[startPin.x, startPin.y, currentMousePos.x, currentMousePos.y]}
+              stroke="red"
+              strokeWidth={2}
             />
-          </svg>
-        );
-      })}
+          )}
+
+          {/* Draw permanent wires */}
+          {wires.map((wire) => {
+            const startPos = getPinAbsolutePosition(wire.startComponentId, wire.startPinId);
+            const endPos = getPinAbsolutePosition(wire.endComponentId, wire.endPinId);
+            return (
+              <Line
+                key={wire.id}
+                points={[startPos.x, startPos.y, endPos.x, endPos.y]}
+                stroke="green"
+                strokeWidth={2}
+              />
+            );
+          })}
+        </Layer>
+      </Stage>
     </div>
   );
 };

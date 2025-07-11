@@ -1,8 +1,12 @@
 import Head from 'next/head'
 import React, { useState } from 'react';
-import HarnessCanvas from '../components/HarnessCanvas'
 import ComponentLibrary from '../components/ComponentLibrary'
 import BOMGenerator from '../components/BOMGenerator'
+import dynamic from 'next/dynamic';
+
+const DynamicHarnessCanvas = dynamic(() => import('../components/HarnessCanvas'), {
+  ssr: false,
+});
 
 export default function Home() {
   const [components, setComponents] = useState<any[]>([]); // Using any for now, will define types later
@@ -18,7 +22,7 @@ export default function Home() {
 
       <main style={{ display: 'flex' }}>
         <ComponentLibrary />
-        <HarnessCanvas components={components} setComponents={setComponents} wires={wires} setWires={setWires} />
+        <DynamicHarnessCanvas components={components} setComponents={setComponents} wires={wires} setWires={setWires} />
       </main>
 
       <BOMGenerator components={components} wires={wires} />
