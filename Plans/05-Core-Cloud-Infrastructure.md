@@ -1,6 +1,6 @@
-# Phase 3: Collaboration and Cloud Features
+# Phase 4: Core Cloud Infrastructure
 
-This phase marks a significant evolution of the project, transforming it from a client-side tool into a full-fledged web application with a backend, database, and user accounts. This enables cloud storage, synchronization, and collaboration.
+This phase marks a significant evolution of the project, transforming it from a client-side tool into a full-fledged web application with a backend, database, and user accounts. This enables cloud storage and basic synchronization.
 
 ## Core Technologies
 
@@ -15,27 +15,19 @@ This phase marks a significant evolution of the project, transforming it from a 
 - **API Endpoints:** A comprehensive set of API endpoints will be created to handle:
     - User registration and login.
     - CRUD (Create, Read, Update, Delete) operations for user projects/designs.
-    - Sharing and access control for designs.
-- **Database Schema:** A robust database schema will be designed to store user accounts, projects, components, and their relationships.
+- **Database Schema:** A robust database schema will be designed to store user accounts, projects, and their relationships.
 - **Data Migration:** A strategy will be needed to allow users to migrate their locally saved designs to the new cloud-based system.
 
 ## Fulfilled Requirements
 
 This phase will address the following key requirements:
 
-### Functional Requirements
-- **REQ-FUNC-COL-001 (Collaboration Features):** The core functionality for sharing designs and tracking changes will be implemented.
-
 ### Non-Functional Requirements
 - **REQ-NON-SEC-001 (Secure User Authentication):** Implementation of a secure login system.
 - **REQ-NON-SEC-002 (Data Privacy):** Ensuring users can only access their own data unless explicitly shared.
-- **REQ-NON-USA-002 (Accessibility):** Ensuring the application is usable by people with disabilities, which is important for educational and public use.
 
 ### Product Requirements
-- **REQ-PROD-AE-005 (Automotive Engineer):** Support for multi-user collaboration.
-- **REQ-PROD-ES-003 (Engineering Student):** Facilitating collaboration among team members.
-- **REQ-PROD-EDU-004 (Educator):** Enabling students to share work with instructors.
-- **REQ-PROD-OSA-003 (Open Source Advocate):** This requirement begins to be fulfilled in this phase with the open-source backend, and will be fully addressed in Phase 4 with self-hosting capabilities.
+- **REQ-PROD-OSA-003 (Open Source Advocate):** This requirement begins to be fulfilled in this phase with the open-source backend, and will be fully addressed in Phase 8 with self-hosting capabilities.
 
 ## Testing Strategy
 
@@ -47,8 +39,3 @@ This phase will address the following key requirements:
 ### 2. Product Level Tests (End-to-End)
 - **User Registration and Login Flow:** Create a test that signs up a new user, logs them in, and logs them out.
 - **Cloud Save/Load Workflow:** Write a test to create a design, save it to the cloud, log out, log back in, and ensure the design can be loaded successfully.
-- **Sharing Workflow:**
-    1.  User A creates a design.
-    2.  User A shares the design with User B.
-    3.  User B logs in and verifies they can see and access the design.
-    4.  User A revokes access, and User B can no longer see the design.
