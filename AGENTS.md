@@ -68,7 +68,7 @@ When performing development tasks, follow this general workflow:
 5.  **Run Tests:** Execute `npm test` (from the `frontend` directory) to verify that changes haven't introduced regressions and that new functionalities are working as expected.
 6.  **Manage Server (if applicable):**
     *   **Stop Server:** If a development server is running, stop it using `lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs kill` (assuming port 3000). If this fails, try `pkill -f "node_modules/next/dist/bin/next"`.
-    *   **Clear Cache (if needed):** If encountering `ENOENT` errors, delete the `.next` directory (`rm -rf .next` in the `frontend` directory).
+    *   **Clear Cache:** To prevent recurring `ENOENT` errors, always delete the `.next` directory (`rm -rf .next` in the `frontend` directory) before starting the server.
     *   **Start Server:** Start the development server in the background using `npm run dev &` (from the `frontend` directory).
 7.  **Verify Manually:** If the task involves UI changes, instruct the user to manually verify the changes in the browser.
 
