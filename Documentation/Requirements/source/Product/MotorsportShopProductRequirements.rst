@@ -25,7 +25,7 @@ Motorsport Shop Product Requirements
    :status: Draft
    :importance: Medium
    :tags: quality-control
-   :related_stories: STORY-MS-002
+   :related_stories: STORY-MS-002, STORY-MS-003
 
    The system must facilitate rigorous quality control, including generating detailed reports, performing continuity and load testing, and ensuring every connection is perfect.
 
@@ -34,7 +34,7 @@ Motorsport Shop Product Requirements
    :status: Draft
    :importance: Medium
    :tags: documentation
-   :related_stories: STORY-MS-002
+   :related_stories: STORY-MS-002, STORY-MS-003
 
    The system must produce comprehensive documentation, including detailed schematics, pin-to-pin wire lists, and visual layout diagrams that are accurate enough for post-race analysis and rapid trackside repairs.
 

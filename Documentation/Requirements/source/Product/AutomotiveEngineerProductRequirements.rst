@@ -25,7 +25,7 @@ Automotive Engineer Product Requirements
    :status: Draft
    :importance: Medium
    :tags: integration
-   :related_stories: STORY-AE-001
+   :related_stories: STORY-AE-001, STORY-AE-002
 
    The system must enable seamless integration of harness designs with other vehicle systems (e.g., ECUs, sensors, actuators) and communication networks (e.g., CAN, LIN, Ethernet).
 

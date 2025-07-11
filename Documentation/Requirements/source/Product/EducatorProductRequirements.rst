@@ -34,6 +34,6 @@ Educator Product Requirements
    :status: Draft
    :importance: Medium
    :tags: education, career-readiness
-   :related_stories: STORY-EDU-001
+   :related_stories: STORY-EDU-001, STORY-EDU-003
 
    The system must equip students with skills and experience using modern design tools, making them more attractive to employers.

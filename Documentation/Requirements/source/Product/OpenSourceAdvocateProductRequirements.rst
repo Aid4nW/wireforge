@@ -7,7 +7,7 @@ Open-Source Advocate Product Requirements
    :status: Draft
    :importance: Medium
    :tags: open-source
-   :related_stories: STORY-OSA-001
+   :related_stories: STORY-OSA-001, STORY-OSA-003
 
    The system must be open-source, allowing users the freedom to use, inspect, modify, and distribute it.
 

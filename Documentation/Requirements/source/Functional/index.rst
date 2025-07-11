@@ -11,3 +11,5 @@ This section details the functional requirements for the WireForge project, desc
    ComponentLibraryManagement.rst
    BOMGeneration.rst
    CollaborationFeatures.rst
+   DataExchange.rst
+   AutomatedDesignValidation.rst
