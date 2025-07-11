@@ -5,7 +5,7 @@ This phase focuses on implementing robust data exchange capabilities and automat
 ## Core Technologies
 
 - **Frontend:** We will continue using Next.js and React. The following libraries will be added:
-    - **XML Parsing:** A library to handle parsing and generating industry-standard formats like KBL.
+- **XML Parsing:** A library to handle parsing and generating industry-standard formats like KBL.
 
 ## Architecture
 

@@ -5,7 +5,7 @@ This phase builds upon the MVP foundation to add features required by profession
 ## Core Technologies
 
 - **Frontend:** We will continue using Next.js and React. The following libraries will be added:
-    - **PDF Generation:** A library like `jspdf` or `@react-pdf/renderer` to enable professional PDF exports for the Bill of Materials.
+- **PDF Generation:** A library like `jspdf` or `@react-pdf/renderer` to enable professional PDF exports for the Bill of Materials.
 - **State Management:** As complexity increases, we may evaluate graduating from React's built-in state hooks to a more robust solution like **Zustand** or **Redux Toolkit** to manage the application state.
 
 ## Architecture
