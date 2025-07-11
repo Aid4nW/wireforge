@@ -1,0 +1,6 @@
+import '@testing-library/jest-dom';
+
+// Mock URL.createObjectURL
+if (typeof window.URL.createObjectURL === 'undefined') {
+  Object.defineProperty(window.URL, 'createObjectURL', { value: jest.fn() });
+}
