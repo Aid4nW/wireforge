@@ -77,6 +77,8 @@ describe('HarnessCanvas', () => {
     jest.spyOn(React, 'useEffect').mockImplementation((cb) => cb());
   });
 
+  // REQ-NON-USA-001: Intuitive User Interface
+  // REQ-NON-PER-001: Responsive Canvas
   it('renders without crashing', () => {
     render(<HarnessCanvas {...defaultProps} />);
     expect(screen.getByText('Harness Design Canvas')).toBeInTheDocument();
@@ -84,7 +86,8 @@ describe('HarnessCanvas', () => {
     expect(screen.getByTestId('konva-layer')).toBeInTheDocument();
   });
 
-  it('adds a new component on drop', () => { // REQ-FUNC-CAN-001
+  // REQ-FUNC-CAN-001: Visual Component Placement
+  it('adds a new component on drop', () => {
     const { container } = render(<HarnessCanvas {...defaultProps} />);
     const canvasWrapper = screen.getByTestId('harness-canvas-wrapper');
 
@@ -127,7 +130,8 @@ describe('HarnessCanvas', () => {
     expect(newComponents[0].y).toBeCloseTo(150);
   });
 
-  it('drags an existing component', () => { // REQ-FUNC-CAN-001
+  // REQ-FUNC-CAN-001: Visual Component Placement
+  it('drags an existing component', () => {
     const initialComponents = [
       {
         id: 'comp-1',
@@ -170,7 +174,8 @@ describe('HarnessCanvas', () => {
     expect(updatedComponents[0].y).toBe(newY);
   });
 
-  it('creates a new wire between two pins', () => { // REQ-FUNC-CAN-002
+  // REQ-FUNC-CAN-002: Wire and Connection Drawing
+  it('creates a new wire between two pins', () => {
     const initialComponents = [
       {
         id: 'comp-1',
@@ -217,7 +222,8 @@ describe('HarnessCanvas', () => {
     expect(newWires[0].endPinId).toBe('p1');
   });
 
-  it('cancels wire drawing when clicking the same pin twice', () => { // REQ-FUNC-CAN-002
+  // REQ-FUNC-CAN-002: Wire and Connection Drawing
+  it('cancels wire drawing when clicking the same pin twice', () => {
     const initialComponents = [
       {
         id: 'comp-1',
@@ -245,7 +251,8 @@ describe('HarnessCanvas', () => {
     expect(mockSetWires).not.toHaveBeenCalled();
   });
 
-  it('cancels wire drawing when clicking on empty canvas after selecting a pin', () => { // REQ-FUNC-CAN-002
+  // REQ-FUNC-CAN-002: Wire and Connection Drawing
+  it('cancels wire drawing when clicking on empty canvas after selecting a pin', () => {
     const initialComponents = [
       {
         id: 'comp-1',
@@ -259,7 +266,7 @@ describe('HarnessCanvas', () => {
     const { container } = render(<HarnessCanvas {...defaultProps} components={initialComponents} />);
 
     const pin = screen.getAllByTestId('konva-circle')[0];
-    const canvasWrapper = container.querySelector('div[data-testid="konva-stage"]');
+    const canvasWrapper = screen.getByTestId('harness-canvas-wrapper');
 
     if (!canvasWrapper) {
       throw new Error('Canvas wrapper not found');

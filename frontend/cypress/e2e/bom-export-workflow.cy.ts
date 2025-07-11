@@ -1,3 +1,11 @@
+// REQ-PROD-DIY-001: Safe and Reliable Harness Creation
+// REQ-PROD-DIY-002: Budget-Friendly Design
+// REQ-PROD-DIY-003: Learning and Accomplishment Support
+// REQ-PROD-DIY-004: Simplicity and Intuitive Use
+// REQ-PROD-EDU-001: Accessible Learning Tools
+// REQ-PROD-EDU-003: Engaging Project Creation
+// REQ-PROD-ES-002: Theoretical Knowledge Application
+// REQ-FUNC-BOM-001: Automatic Bill of Materials Generation
 describe('BOM Export Workflow', () => {
   beforeEach(() => {
     cy.visit('/');
