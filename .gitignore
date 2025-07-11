@@ -185,3 +185,15 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Next.js/React
+.next/
+node_modules/
+
+# npm
+npm-debug.log*
+.npm/
+
+# Production
+build/
+
