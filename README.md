@@ -25,4 +25,15 @@ We use Sphinx for generating project documentation and Sphinx-needs for requirem
 ## Getting Started
 
 1.  **Clone the repository:** `git clone https://github.com/your-username/wireforge.git`
-2.  **Open `index.html` in your browser** to run the application.
+2.  **Navigate to the frontend directory:** `cd frontend`
+3.  **Install dependencies:** `npm install`
+4.  **Run the development server:** `npm run dev`
+    *   The application will be accessible at `http://localhost:3000`.
+
+## Current Development Status
+
+We have successfully integrated `react-konva` as the 2D graphics library for the harness design canvas, replacing the initial HTML/SVG implementation. Key functionalities like component placement (drag-and-drop) and wire drawing are now implemented and functional.
+
+### Testing
+
+Unit tests are implemented using Jest and React Testing Library, covering core canvas interactions and BOM generation. End-to-end testing is planned for future phases.

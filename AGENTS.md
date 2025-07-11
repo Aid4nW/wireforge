@@ -56,3 +56,9 @@ Key aspects include:
 *   **Follow Conventions:** Adhere to the development conventions outlined in this document.
 *   **Start Small:** Break down large tasks into smaller, manageable steps.
 *   **Test Your Changes:** Ensure that your changes do not break existing functionality.
+
+## Common Development Issues and Solutions
+
+*   **Recurring `ENOENT` error with Next.js:** If you encounter `ENOENT: no such file or directory, open '/Users/entity/Local Documents/git/wireforge/frontend/.next/server/pages/_document.js'`, it often indicates a corrupted Next.js build cache. The current workaround is to delete the `.next` directory (`rm -rf .next` in the `frontend` directory) and restart the development server.
+*   **Interactive `npm test` or `npm lint`:** These commands might enter an interactive mode that the agent cannot respond to. Ensure the `test` script in `package.json` uses `jest --ci` for non-interactive testing, and that an `.eslintrc.json` file exists for non-interactive linting.
+*   **React `act()` warnings in tests:** When testing React components, state updates should be wrapped in `act()` to ensure all updates are processed before assertions. For example: `act(() => { fireEvent.click(element); });`
