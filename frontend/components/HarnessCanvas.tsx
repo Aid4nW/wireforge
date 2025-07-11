@@ -2,6 +2,7 @@
 // REQ-FUNC-CAN-002: Wire and Connection Drawing
 // REQ-FUNC-LIB-001: Pre-populated Component Library (handling dropped components)
 import React, { useState, useEffect, useRef } from 'react';
+import { saveDesignToLocalStorage } from '../utils/localStorage';
 
 interface Pin {
   id: string;
@@ -32,7 +33,8 @@ interface HarnessCanvasProps {
   setWires: React.Dispatch<React.SetStateAction<Wire[]>>;
 }
 
-import { Stage, Layer, Rect, KonvaEventObject, Text, Circle, Line, Group } from 'react-konva';
+import { Stage, Layer, Rect, Text, Circle, Line, Group } from 'react-konva';
+import type { KonvaEventObject } from 'konva/lib/Node';
 
 const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires }) => {
   const [drawingWire, setDrawingWire] = useState(false);
@@ -182,6 +184,23 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      <button
+        onClick={() => saveDesignToLocalStorage(components, wires)}
+        style={{
+          position: 'absolute',
+          top: '50px',
+          left: '10px',
+          zIndex: 100, // Ensure button is above canvas
+          padding: '8px 12px',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      >
+        Save Design
+      </button>
       <Stage
         ref={stageRef}
         width={stageDimensions.width}

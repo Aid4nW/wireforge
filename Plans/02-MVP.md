@@ -15,7 +15,8 @@ The MVP will be a single-page application (SPA) running entirely in the user's b
 - **Component-Based Structure:** The UI will be built using React components.
 - **Canvas Logic:** The main canvas component will manage the state of the harness design, including components, wires, and their positions.
 - **State Management:** We will use React's built-in state management (useState, useReducer) for simplicity in the MVP.
-- **Local Storage:** Design data will be saved to and loaded from the browser's `localStorage` or IndexedDB, allowing users to persist their work between sessions on the same machine.
+-   **Local Storage:** Design data will be saved to and loaded from the browser's `localStorage` or IndexedDB, allowing users to persist their work between sessions on the same machine.
+    *   **Status:** **Completed.** Implemented save and load functionality using `localStorage`.
 
 ## Fulfilled Requirements
 
