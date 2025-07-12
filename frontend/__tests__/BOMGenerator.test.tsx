@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BOMGenerator from '../components/BOMGenerator';
+import '@testing-library/jest-dom';
 
 describe('BOMGenerator', () => {
   // Mock global.Blob before any test runs that might use it
