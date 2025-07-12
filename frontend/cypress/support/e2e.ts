@@ -16,6 +16,14 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      assertWireCount(expectedCount: number): Chainable<void>;
+    }
+  }
+}
+
 Cypress.Commands.add('assertWireCount', (expectedCount: number) => {
   cy.window().its('harnessState.wires').should('have.length', expectedCount);
 });
