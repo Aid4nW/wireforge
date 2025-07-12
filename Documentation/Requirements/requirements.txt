@@ -1,2 +1,2 @@
-Sphinx
-sphinx-needs
+Sphinx==7.4.7
+sphinx-needs==5.1.0
