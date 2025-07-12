@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import BOMGenerator from '../components/BOMGenerator';
+import { useBOMGenerator } from '../components/BOMGenerator';
 import '@testing-library/jest-dom';
 
 describe('BOMGenerator', () => {
@@ -21,13 +21,7 @@ describe('BOMGenerator', () => {
   });
 
   // REQ-NON-USA-001: Intuitive User Interface
-  it('renders without crashing', () => {
-    render(<BOMGenerator components={[]} wires={[]} />);
-    expect(screen.getByText('Bill of Materials')).toBeInTheDocument();
-  });
-
-  // REQ-FUNC-BOM-001: Automatic Bill of Materials Generation
-  it('generates a CSV with correct component and wire counts', async () => {
+  it('should generate a CSV with correct component and wire counts', async () => {
     const components = [
       { id: 'c1', type: 'Connector A', x: 0, y: 0, pins: [] },
       { id: 'c2', type: 'Sensor B', x: 0, y: 0, pins: [] },
@@ -38,7 +32,13 @@ describe('BOMGenerator', () => {
       { id: 'w2', startComponentId: 'c2', startPinId: 'p1', endComponentId: 'c3', endPinId: 'p1' },
     ];
 
-    render(<BOMGenerator components={components} wires={wires} />);
+    // Create a dummy component to use the hook
+    const TestComponent = () => {
+      const { downloadBOM } = useBOMGenerator(components, wires);
+      return <button onClick={downloadBOM}>Generate BOM (CSV)</button>;
+    };
+
+    render(<TestComponent />);
 
     const generateButton = screen.getByText('Generate BOM (CSV)');
     await userEvent.click(generateButton); // Await the click event

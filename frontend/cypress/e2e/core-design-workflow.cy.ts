@@ -17,21 +17,21 @@ describe('Core Design Workflow', () => {
     const dataTransfer = new DataTransfer();
     dataTransfer.setData('component/type', 'Connector A');
     cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('dragend');
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
+    cy.get('.canvas-placeholder').first().trigger('dragend');
 
     // Drag and drop Sensor B
     const dataTransfer2 = new DataTransfer();
     dataTransfer2.setData('component/type', 'Sensor B');
     cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('dragend');
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
+    cy.get('.canvas-placeholder').first().trigger('dragend');
 
     // Wait for components to render on canvas
     cy.wait(500); 
 
     // Take a screenshot to visually verify components are on the canvas
-    cy.get('canvas').screenshot('components-on-canvas');
+    cy.get('.canvas-placeholder canvas').screenshot('components-on-canvas');
 
     // Get component positions from the exposed state
     cy.window().its('harnessState.components').then((components) => {
@@ -47,7 +47,7 @@ describe('Core Design Workflow', () => {
         const sensorBPin1Y = sensorB.y + sensorB.pins[0].yOffset;
 
         // Click on a pin of Connector A
-        cy.get('canvas').click(connectorAPin1X, connectorAPin1Y);
+        cy.get('[data-testid="konva-circle"]').eq(0).click();
 
         // Click on a pin of Sensor B
         cy.get('canvas').click(sensorBPin1X, sensorBPin1Y);

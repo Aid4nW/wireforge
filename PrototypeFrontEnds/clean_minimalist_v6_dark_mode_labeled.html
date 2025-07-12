@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WireForge - Clean & Minimalist (Softer Tones with Dark Mode)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color-light: #f9f9f9;
+            --text-color-light: #444;
+            --header-bg-light: #ffffff;
+            --header-border-light: #e8e8e8;
+            --header-shadow-light: rgba(0,0,0,0.03);
+            --h1-color-light: #34495e;
+            --nav-link-color-light: #666;
+            --nav-link-hover-light: #5a8dff;
+            --aside-bg-light: #ffffff;
+            --aside-border-light: #e8e8e8;
+            --aside-shadow-light: rgba(0,0,0,0.02);
+            --aside-h3-color-light: #34495e;
+            --aside-link-color-light: #666;
+            --aside-link-hover-bg-light: #eef5ff;
+            --aside-link-hover-color-light: #5a8dff;
+            --main-bg-light: #f9f9f9;
+            --canvas-bg-light: #eef2f5;
+            --canvas-border-light: #a0a0a0;
+            --canvas-text-light: #777;
+            --controls-bg-light: #ffffff;
+            --controls-shadow-light: rgba(0,0,0,0.03);
+            --button-bg-light: #5a8dff;
+            --button-color-light: white;
+            --button-hover-light: #3a6edb;
+            --footer-bg-light: #34495e;
+            --footer-color-light: #f0f0f0;
+
+            --bg-color-dark: #282c34;
+            --text-color-dark: #e0e0e0;
+            --header-bg-dark: #21252b;
+            --header-border-dark: #3a3f47;
+            --header-shadow-dark: rgba(0,0,0,0.2);
+            --h1-color-dark: #61dafb;
+            --nav-link-color-dark: #e0e0e0;
+            --nav-link-hover-dark: #61dafb;
+            --aside-bg-dark: #21252b;
+            --aside-border-dark: #3a3f47;
+            --aside-shadow-dark: rgba(0,0,0,0.15);
+            --aside-h3-color-dark: #61dafb;
+            --aside-link-color-dark: #e0e0e0;
+            --aside-link-hover-bg-dark: #3a3f47;
+            --aside-link-hover-color-dark: #61dafb;
+            --main-bg-dark: #282c34;
+            --canvas-bg-dark: #3a3f47;
+            --canvas-border-dark: #61dafb;
+            --canvas-text-dark: #61dafb;
+            --controls-bg-dark: #21252b;
+            --controls-shadow-dark: rgba(0,0,0,0.2);
+            --button-bg-dark: #61dafb;
+            --button-color-dark: #21252b;
+            --button-hover-dark: #21a1f1;
+            --footer-bg-dark: #21252b;
+            --footer-color-dark: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        header {
+            background-color: var(--header-bg-light);
+            padding: 18px 35px;
+            border-bottom: 1px solid var(--header-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px var(--header-shadow-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        body.dark-mode header {
+            background-color: var(--header-bg-dark);
+            border-bottom-color: var(--header-border-dark);
+            box-shadow: 0 2px 5px var(--header-shadow-dark);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+            color: var(--h1-color-light);
+            transition: color 0.3s ease;
+        }
+        body.dark-mode header h1 {
+            color: var(--h1-color-dark);
+        }
+        nav {
+            display: flex;
+            align-items: center; /* Align items vertically in nav */
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--nav-link-color-light);
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: var(--nav-link-hover-light);
+        }
+        body.dark-mode nav a {
+            color: var(--nav-link-color-dark);
+        }
+        body.dark-mode nav a:hover {
+            color: var(--nav-link-hover-dark);
+        }
+        .container {
+            display: flex;
+            flex-grow: 1;
+        }
+        aside {
+            width: 260px;
+            background-color: var(--aside-bg-light);
+            border-right: 1px solid var(--aside-border-light);
+            padding: 25px;
+            box-shadow: 2px 0 5px var(--aside-shadow-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        body.dark-mode aside {
+            background-color: var(--aside-bg-dark);
+            border-right-color: var(--aside-border-dark);
+            box-shadow: 2px 0 5px var(--aside-shadow-dark);
+        }
+        aside h3 {
+            color: var(--aside-h3-color-light);
+            margin-top: 0;
+            margin-bottom: 22px;
+            font-size: 19px;
+            transition: color 0.3s ease;
+        }
+        body.dark-mode aside h3 {
+            color: var(--aside-h3-color-dark);
+        }
+        aside ul {
+            list-style: none;
+            padding: 0;
+        }
+        aside ul li {
+            margin-bottom: 12px;
+        }
+        aside ul li a {
+            text-decoration: none;
+            color: var(--aside-link-color-light);
+            display: block;
+            padding: 9px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        aside ul li a:hover {
+            background-color: var(--aside-link-hover-bg-light);
+            color: var(--aside-link-hover-color-light);
+        }
+        body.dark-mode aside ul li a {
+            color: var(--aside-link-color-dark);
+        }
+        body.dark-mode aside ul li a:hover {
+            background-color: var(--aside-link-hover-bg-dark);
+            color: var(--aside-link-hover-color-dark);
+        }
+        main {
+            flex-grow: 1;
+            padding: 35px;
+            background-color: var(--main-bg-light);
+            transition: background-color 0.3s ease;
+        }
+        body.dark-mode main {
+            background-color: var(--main-bg-dark);
+        }
+        .canvas-placeholder {
+            background-color: var(--canvas-bg-light);
+            border: 1px dashed var(--canvas-border-light);
+            height: 620px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--canvas-text-light);
+            font-size: 26px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode .canvas-placeholder {
+            background-color: var(--canvas-bg-dark);
+            border-color: var(--canvas-border-dark);
+            color: var(--canvas-text-dark);
+        }
+        .controls {
+            background-color: var(--controls-bg-light);
+            padding: 22px;
+            margin-top: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px var(--controls-shadow-light);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        body.dark-mode .controls {
+            background-color: var(--controls-bg-dark);
+            box-shadow: 0 2px 5px var(--controls-shadow-dark);
+        }
+        .controls button {
+            background-color: var(--button-bg-light);
+            color: var(--button-color-light);
+            border: none;
+            padding: 11px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 12px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .controls button:hover {
+            background-color: var(--button-hover-light);
+        }
+        body.dark-mode .controls button {
+            background-color: var(--button-bg-dark);
+            color: var(--button-color-dark);
+        }
+        body.dark-mode .controls button:hover {
+            background-color: var(--button-hover-dark);
+        }
+        footer {
+            background-color: var(--footer-bg-light);
+            color: var(--footer-color-light);
+            text-align: center;
+            padding: 18px;
+            font-size: 14px;
+            margin-top: 25px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode footer {
+            background-color: var(--footer-bg-dark);
+            color: var(--footer-color-dark);
+        }
+
+        /* Dark Mode Toggle Switch */
+        .theme-switch-wrapper {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            background-color: var(--controls-bg-light); /* Use control background for consistency */
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--controls-shadow-light);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        body.dark-mode .theme-switch-wrapper {
+            background-color: var(--controls-bg-dark);
+            box-shadow: 0 2px 5px var(--controls-shadow-dark);
+        }
+        .theme-switch-wrapper span {
+            margin-right: 10px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        body.dark-mode .theme-switch-wrapper span {
+            color: var(--text-color-dark);
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 48px;
+        }
+        .theme-switch input {
+            display: none;
+        }
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #5a8dff;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WireForge</h1>
+        <nav>
+            <a href="#">Dashboard</a>
+            <a href="#">Projects</a>
+            <a href="#">Settings</a>
+            <a href="#">Help</a>
+        </nav>
+    </header>
+    <div class="container">
+        <aside>
+            <h3>Components</h3>
+            <ul>
+                <li><a href="#">Connector (2-pin)</a></li>
+                <li><a href="#">Resistor (100 Ohm)</a></li>
+                <li><a href="#">LED (Red)</a></li>
+                <li><a href="#">Switch (SPDT)</a></li>
+                <li><a href="#">Fuse (10A)</a></li>
+            </ul>
+            <h3>Tools</h3>
+            <ul>
+                <li><a href="#">Wire Tool</a></li>
+                <li><a href="#">Text Tool</a></li>
+                <li><a href="#">Measure Tool</a></li>
+            </ul>
+        </aside>
+        <main>
+            <h2>Current Project: Untitled Harness</h2>
+            <div class="canvas-placeholder">
+                Wiring Harness Design Canvas
+            </div>
+            <div class="controls">
+                <button>Save Project</button>
+                <button>Load Project</button>
+                <button>Export BOM</button>
+                <button>Print Design</button>
+            </div>
+        </main>
+    </div>
+    <footer>
+        &copy; 2025 WireForge. All rights reserved.
+    </footer>
+
+    <div class="theme-switch-wrapper">
+        <span>Dark Mode</span>
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+    </div>
+
+    <script>
+        const checkbox = document.getElementById('checkbox');
+        const body = document.body;
+
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            body.classList.add(currentTheme);
+            if (currentTheme === 'dark-mode') {
+                checkbox.checked = true;
+            }
+        }
+
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light-mode');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -64,12 +64,22 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
   const stageRef = useRef<any>(null);
 
   useEffect(() => {
-    if (containerRef.current) {
-      setStageDimensions({
-        width: containerRef.current.offsetWidth,
-        height: containerRef.current.offsetHeight,
-      });
-    }
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setStageDimensions({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        });
+      }
+    };
+
+    updateDimensions(); // Set initial dimensions
+
+    window.addEventListener('resize', updateDimensions);
+
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -187,34 +197,11 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
   return (
     <div
       ref={containerRef}
-      style={{
-        border: '1px solid black',
-        width: '100%',
-        height: '500px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
+      className="canvas-placeholder"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       data-testid="harness-canvas-wrapper"
     >
-      <button
-        onClick={() => saveDesignToLocalStorage(components, wires)}
-        style={{
-          position: 'absolute',
-          top: '50px',
-          left: '10px',
-          zIndex: 100, // Ensure button is above canvas
-          padding: '8px 12px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}
-      >
-        Save Design
-      </button>
       <Stage
         ref={stageRef}
         width={stageDimensions.width}
@@ -223,7 +210,6 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
         onMouseUp={handleMouseUpOnCanvas}
       >
         <Layer>
-          <Text text="Harness Design Canvas" x={10} y={10} fontSize={20} fill="black" />
           {components.map((comp) => (
             <Group
               key={comp.id}
@@ -290,6 +276,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
                 points={[startPos.x, startPos.y, endPos.x, endPos.y]}
                 stroke="green"
                 strokeWidth={2}
+                data-testid="konva-line-perm"
               />
             );
           })}

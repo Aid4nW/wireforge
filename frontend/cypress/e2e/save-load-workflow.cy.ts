@@ -15,17 +15,17 @@ describe('Save/Load Functionality', () => {
     const dataTransfer = new DataTransfer();
     dataTransfer.setData('component/type', 'Connector A');
     cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('dragend');
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
+    cy.get('.canvas-placeholder').first().trigger('dragend');
 
     const dataTransfer2 = new DataTransfer();
     dataTransfer2.setData('component/type', 'Sensor B');
     cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('dragend');
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
+    cy.get('.canvas-placeholder').first().trigger('dragend');
 
     // 2. Save the design
-    cy.get('button').contains('Save Design').click();
+    cy.get('.controls button').contains('Save Project').click();
 
     // 3. Reload the page
     cy.reload();

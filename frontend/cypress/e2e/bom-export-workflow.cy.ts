@@ -18,17 +18,17 @@ describe('BOM Export Workflow', () => {
     const dataTransfer = new DataTransfer();
     dataTransfer.setData('component/type', 'Connector A');
     cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('dragend');
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
+    cy.get('.canvas-placeholder').first().trigger('dragend');
 
     const dataTransfer2 = new DataTransfer();
     dataTransfer2.setData('component/type', 'Sensor B');
     cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
-    cy.get('[style*="border: 1px solid black"]').first().trigger('dragend');
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
+    cy.get('.canvas-placeholder').first().trigger('dragend');
 
     // 2. Click the Generate BOM button
-    cy.get('button').contains('Generate BOM (CSV)').click();
+    cy.get('.controls button').contains('Export BOM').click();
 
     // 3. Verify the file is downloaded and its content
     const downloadsFolder = Cypress.config('downloadsFolder');
