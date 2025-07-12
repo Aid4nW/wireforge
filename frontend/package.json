@@ -9,8 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --ci",
-    "cypress:open": "cypress open",
-    "cypress:run": "npx wait-on http://localhost:3000 && cypress run"
+    "cypress:open": "cypress open --config-file config/cypress.config.ts",
+    "cypress:run": "npx wait-on http://localhost:3000 && cypress run --config-file config/cypress.config.ts"
   },
   "keywords": [],
   "author": "",
