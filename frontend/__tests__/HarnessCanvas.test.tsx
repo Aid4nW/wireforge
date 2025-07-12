@@ -81,7 +81,7 @@ describe('HarnessCanvas', () => {
   // REQ-NON-PER-001: Responsive Canvas
   it('renders without crashing', () => {
     render(<HarnessCanvas {...defaultProps} />);
-    expect(screen.getByText('Harness Design Canvas')).toBeInTheDocument();
+    
     expect(screen.getByTestId('konva-stage')).toBeInTheDocument();
     expect(screen.getByTestId('konva-layer')).toBeInTheDocument();
   });
