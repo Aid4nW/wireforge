@@ -18,14 +18,15 @@ describe('BOM Export Workflow', () => {
     const dataTransfer = new DataTransfer();
     dataTransfer.setData('component/type', 'Connector A');
     cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
-    cy.get('.canvas-placeholder').first().trigger('dragend');
+    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
 
     const dataTransfer2 = new DataTransfer();
     dataTransfer2.setData('component/type', 'Sensor B');
     cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
-    cy.get('.canvas-placeholder').first().trigger('dragend');
+    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
+
+    // Wait for the component to be added to the state
+    cy.window().its('harnessState.components').should('have.length', 2);
 
     // 2. Click the Generate BOM button
     cy.get('.controls button').contains('Export BOM').click();
