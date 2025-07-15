@@ -29,8 +29,8 @@ jest.mock('react-konva', () => ({
   Text: (props: any) => <div data-testid="konva-text" data-props={JSON.stringify(props)}>{props.text}</div>,
   Circle: ({ children, onClick, onTap, ...props }: any) => {
     // Filter out Konva-specific props and custom props that shouldn't go to DOM
-    const { _isPin, ...domProps } = props;
-    return <div data-testid="konva-circle" onClick={onClick} onTouchEnd={onTap} {...domProps}>{children}</div>;
+    const { _isPin, 'data-testid': dataTestId, ...domProps } = props;
+    return <div data-testid={dataTestId} onClick={onClick} onTouchEnd={onTap} {...domProps}>{children}</div>;
   },
   Line: (props: any) => <div data-testid="konva-line" data-props={JSON.stringify(props)} />,
   KonvaEventObject: jest.fn(),
@@ -195,9 +195,9 @@ describe('HarnessCanvas', () => {
 
     render(<HarnessCanvas {...defaultProps} components={initialComponents} />);
 
-    // Find the pins
-    const pin1 = screen.getAllByTestId('konva-circle')[0]; // First pin
-    const pin2 = screen.getAllByTestId('konva-circle')[1]; // Second pin
+    // Find the pins using their dynamic data-testid
+    const pin1 = screen.getByTestId('konva-circle-comp-1-p1');
+    const pin2 = screen.getByTestId('konva-circle-comp-2-p1');
 
     // Simulate click on the first pin
     act(() => {
@@ -236,7 +236,7 @@ describe('HarnessCanvas', () => {
 
     render(<HarnessCanvas {...defaultProps} components={initialComponents} />);
 
-    const pin = screen.getAllByTestId('konva-circle')[0];
+    const pin = screen.getByTestId('konva-circle-comp-1-p1');
 
     // Simulate first click to start drawing
     act(() => {
@@ -265,7 +265,7 @@ describe('HarnessCanvas', () => {
 
     const { container } = render(<HarnessCanvas {...defaultProps} components={initialComponents} />);
 
-    const pin = screen.getAllByTestId('konva-circle')[0];
+    const pin = screen.getByTestId('konva-circle-comp-1-p1');
     const canvasWrapper = screen.getByTestId('harness-canvas-wrapper');
 
     if (!canvasWrapper) {
