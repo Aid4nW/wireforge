@@ -25,13 +25,33 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      assertWireCount(expectedCount: number): Chainable<void>;
+      triggerPinClick(componentId: string, pinId: string): Chainable<void>;
+    }
+  }
+}
+
+Cypress.Commands.add('assertWireCount', (expectedCount: number) => {
+  cy.window().its('harnessState.wires').should('have.length', expectedCount);
+});
+
+Cypress.Commands.add('triggerPinClick', (componentId: string, pinId: string) => {
+  cy.window().its('harnessState.components').then((components) => {
+    const component = components.find((comp: any) => comp.id === componentId);
+    if (!component) {
+      throw new Error(`Component with ID ${componentId} not found`);
+    }
+    const pin = component.pins.find((p: any) => p.id === pinId);
+    if (!pin) {
+      throw new Error(`Pin with ID ${pinId} not found on component ${componentId}`);
+    }
+
+    const pinAbsoluteX = component.x + pin.xOffset;
+    const pinAbsoluteY = component.y + pin.yOffset;
+
+    cy.get('canvas').click(pinAbsoluteX, pinAbsoluteY, { force: true });
+  });
+});

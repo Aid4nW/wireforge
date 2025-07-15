@@ -8,6 +8,7 @@ import { saveDesignToLocalStorage } from '../utils/localStorage';
 declare global {
   interface Window {
     harnessState?: { components: Component[]; wires: Wire[] };
+    triggerPinClick?: (componentId: string, pinId: string) => void;
   }
 }
 
@@ -252,6 +253,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
                   onTap={() => handlePinClick(comp.id, pin, comp.x, comp.y)}
                   // Custom property to identify pins for drag logic
                   _isPin={true}
+                  data-testid={`konva-circle-${comp.id}-${pin.id}`}
                 />
               ))}
             </Group>
