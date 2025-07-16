@@ -9,6 +9,7 @@ declare global {
   interface Window {
     harnessState?: { components: Component[]; wires: Wire[] };
     triggerPinClick?: (componentId: string, pinId: string) => void;
+    Cypress?: any;
   }
 }
 
@@ -42,7 +43,7 @@ interface HarnessCanvasProps {
 }
 
 import { Stage, Layer, Rect, Text, Circle, Line, Group } from 'react-konva';
-import type { KonvaEventObject } from 'konva/lib/Node';
+import { KonvaEventObject } from 'konva/lib/Node';
 
 const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires }) => {
   // Expose state for Cypress testing

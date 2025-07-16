@@ -4,6 +4,17 @@ import { loadDesignFromLocalStorage, saveDesignToLocalStorage } from '../utils/l
 import { useBOMGenerator } from '../components/BOMGenerator';
 
 import HarnessCanvas from '../components/HarnessCanvas';
+import { useLayoutEffect as reactUseLayoutEffect } from 'react';
+
+// Define Wire type (replace with actual definition if available)
+type Wire = {
+  id: string;
+  startComponentId: string;
+  startPinId: string;
+  endComponentId: string;
+  endPinId: string;
+  // Add other properties as needed
+};
 
   
 
@@ -12,10 +23,9 @@ export default function Home() {
   const [wires, setWires] = useState<Wire[]>([]);
 
   useLayoutEffect(() => {
-    loadDesignFromLocalStorage().then(({ components: savedComponents, wires: savedWires }) => {
-      setComponents(savedComponents);
-      setWires(savedWires);
-    });
+    const { components: savedComponents, wires: savedWires } = loadDesignFromLocalStorage();
+    setComponents(savedComponents);
+    setWires(savedWires);
   }, []);
 
   const { downloadBOM } = useBOMGenerator(components, wires);
@@ -45,3 +55,7 @@ export default function Home() {
     </>
   )
 }
+function useLayoutEffect(effect: () => void | (() => void), deps: React.DependencyList) {
+  return reactUseLayoutEffect(effect, deps);
+}
+
