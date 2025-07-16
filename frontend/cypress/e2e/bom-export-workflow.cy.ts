@@ -14,6 +14,7 @@ describe('BOM Export Workflow', () => {
   });
 
   it('should generate and download a correct Bill of Materials CSV', () => {
+    // REQ: REQ-FUNC-BOM-001 (Automatic Bill of Materials Generation)
     // 1. Create a design (drag and drop components)
     const dataTransfer = new DataTransfer();
     dataTransfer.setData('component/type', 'Connector A');

@@ -175,7 +175,65 @@ main {
 body.dark-mode main {
     background-color: var(--main-bg-dark);
 }
+
+.main-content {
+    display: flex;
+    gap: 20px; /* Space between canvas and component library */
+    flex-grow: 1; /* Allow main content to take available space */
+}
+
 .canvas-placeholder {
+    flex-grow: 1; /* Allow canvas to take available space */
+    background-color: var(--canvas-bg-light);
+    border: 1px dashed var(--canvas-border-light);
+    height: 100%; /* Fill parent height */
+    color: var(--canvas-text-light);
+    font-size: 26px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+body.dark-mode .canvas-placeholder {
+    background-color: var(--canvas-bg-dark);
+    border-color: var(--canvas-border-dark);
+    color: var(--canvas-text-dark);
+}
+
+/* Component Library Styling */
+aside ul[data-testid="component-library"] {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 200px; /* Fixed width for the component library */
+    background-color: var(--aside-bg-light);
+    border: 1px solid var(--aside-border-light);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px var(--aside-shadow-light);
+}
+body.dark-mode aside ul[data-testid="component-library"] {
+    background-color: var(--aside-bg-dark);
+    border-color: var(--aside-border-dark);
+    box-shadow: 0 2px 5px var(--aside-shadow-dark);
+}
+aside ul[data-testid="component-library"] li {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background-color: var(--aside-link-hover-bg-light); /* Lighter background for draggable items */
+    border-radius: 5px;
+    cursor: grab;
+    font-weight: 500;
+    color: var(--aside-link-hover-color-light);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+body.dark-mode aside ul[data-testid="component-library"] li {
+    background-color: var(--aside-link-hover-bg-dark);
+    color: var(--aside-link-hover-color-dark);
+}
+aside ul[data-testid="component-library"] li:hover {
+    opacity: 0.8;
+}
+
+.controls {
     background-color: var(--canvas-bg-light);
     border: 1px dashed var(--canvas-border-light);
     height: 620px;

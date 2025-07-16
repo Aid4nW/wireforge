@@ -11,6 +11,7 @@ describe('Save/Load Functionality', () => {
   });
 
   it('should save and load a design from local storage', () => {
+    // FEATURE: Local Storage Save/Load
     // 1. Create a design (drag and drop components)
     const dataTransfer = new DataTransfer();
     dataTransfer.setData('component/type', 'Connector A');

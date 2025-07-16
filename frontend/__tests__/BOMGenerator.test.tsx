@@ -21,6 +21,7 @@ describe('BOMGenerator', () => {
   });
 
   // REQ-NON-USA-001: Intuitive User Interface
+  // REQ: REQ-FUNC-BOM-001 (Automatic Bill of Materials Generation)
   it('should generate a CSV with correct component and wire counts', async () => {
     const components = [
       { id: 'c1', type: 'Connector A', x: 0, y: 0, pins: [] },

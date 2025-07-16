@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { loadDesignFromLocalStorage, saveDesignToLocalStorage } from '../utils/localStorage';
 import { useBOMGenerator } from '../components/BOMGenerator';
 
 import HarnessCanvas from '../components/HarnessCanvas';
 import { useLayoutEffect as reactUseLayoutEffect } from 'react';
+import ComponentLibrary from '../components/ComponentLibrary';
 
 // Define Wire type (replace with actual definition if available)
 type Wire = {
