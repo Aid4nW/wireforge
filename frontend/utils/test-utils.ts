@@ -1,4 +1,16 @@
-import { Component, Pin } from '../components/HarnessCanvas'; // Assuming these types are exported or defined globally
+interface Pin {
+  id: string;
+  xOffset: number;
+  yOffset: number;
+}
+
+interface Component {
+  id: string;
+  type: string;
+  x: number;
+  y: number;
+  pins: Pin[];
+}
 
 export const simulateDrop = (
   componentType: string,
