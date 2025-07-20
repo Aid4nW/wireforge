@@ -14,3 +14,4 @@ This section details the functional requirements for the WireForge project, desc
    DataExchange.rst
    AutomatedDesignValidation.rst
    ClearDesign.rst
+   DeleteItems.rst
