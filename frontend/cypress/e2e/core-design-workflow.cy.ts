@@ -14,34 +14,47 @@ describe('Core Design Workflow', () => {
   });
 
   it('allows users to drag and drop components and draw wires', () => {
-    // Drag and drop Connector A, accounting for the sidebar
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData('component/type', 'Connector A');
-    cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 400, clientY: 300, dataTransfer });
+    // Drag and drop Connector A
+    cy.get('.component-category button').contains('Connector').click();
+    const dataTransferA = new DataTransfer();
+    dataTransferA.setData('component/type', 'Connector A');
+    cy.get('.component-category ul li').contains('Connector A').trigger('dragstart', { dataTransfer: dataTransferA });
+    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 500, clientY: 350, dataTransfer: dataTransferA });
     cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('dragend');
+    cy.wait(2000); // Give Konva time to render pins
 
-    // Drag and drop Sensor B, accounting for the sidebar
-    const dataTransfer2 = new DataTransfer();
-    dataTransfer2.setData('component/type', 'Sensor B');
-    cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 600, clientY: 300, dataTransfer: dataTransfer2 });
+    // Drag and drop ECU A
+    cy.get('.component-category button').contains('ECU').click(); // Open ECU menu
+    const dataTransferECU = new DataTransfer();
+    dataTransferECU.setData('component/type', 'ECU A');
+    cy.get('.component-category ul li').contains('ECU A').trigger('dragstart', { dataTransfer: dataTransferECU });
+    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 700, clientY: 350, dataTransfer: dataTransferECU });
     cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('dragend');
+    cy.wait(2000); // Give Konva time to render pins
 
     // Wait for components to be added to the state and rendered
-    cy.window().its('harnessState.components').should('have.length', 2);
-
-    // Get component positions from the exposed state
-    cy.window().its('harnessState.components').then((components) => {
+    cy.window().its('harnessState.components').should('have.length', 2).wait(2000).then((components) => {
+      cy.log('harnessState.components after drag and drop:', components);
       const connectorA = components.find((comp: any) => comp.type === 'Connector A');
-      const sensorB = components.find((comp: any) => comp.type === 'Sensor B');
+      const ecuA = components.find((comp: any) => comp.type === 'ECU A');
 
-      if (connectorA && sensorB) {
-        // Ensure the test helper function is available before invoking it
+      if (connectorA && ecuA) {
+        cy.log('Connector A found:', connectorA);
+        cy.log('ECU A found:', ecuA);
+        cy.log('Connector A pins:', connectorA.pins);
+        cy.log('ECU A pins:', ecuA.pins);
+
+        // Assert that pins exist before clicking
+        cy.wrap(connectorA.pins).should('have.length.at.least', 1);
+        cy.wrap(ecuA.pins).should('have.length.at.least', 1);
+        cy.wait(500); // Give time for pins to be rendered and state updated
+
+        cy.log('Attempting to click pin p1 on Connector A');
         cy.triggerPinClick(connectorA.id, 'p1');
-        cy.triggerPinClick(sensorB.id, 'p1');
+        cy.log('Attempting to click pin p1 on ECU A');
+        cy.triggerPinClick(ecuA.id, 'p1');
       } else {
-        throw new Error('Could not find Connector A or Sensor B on canvas');
+        throw new Error('Could not find Connector A or ECU A on canvas');
       }
     });
 

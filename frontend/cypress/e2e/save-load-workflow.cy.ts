@@ -13,16 +13,20 @@ describe('Save/Load Functionality', () => {
   it('should save and load a design from local storage', () => {
     // FEATURE: Local Storage Save/Load
     // 1. Create a design (drag and drop components)
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData('component/type', 'Connector A');
-    cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
+    // Drag and drop Connector A
+    cy.get('.component-category button').contains('Connector').click();
+    const dataTransferA = new DataTransfer();
+    dataTransferA.setData('component/type', 'Connector A');
+    cy.get('.component-category ul li').contains('Connector A').trigger('dragstart', { dataTransfer: dataTransferA });
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer: dataTransferA });
     cy.get('.canvas-placeholder').first().trigger('dragend');
 
-    const dataTransfer2 = new DataTransfer();
-    dataTransfer2.setData('component/type', 'Sensor B');
-    cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
+    // Drag and drop ECU A
+    cy.get('.component-category button').contains('ECU').click(); // Open ECU menu
+    const dataTransferECU = new DataTransfer();
+    dataTransferECU.setData('component/type', 'ECU A');
+    cy.get('.component-category ul li').contains('ECU A').trigger('dragstart', { dataTransfer: dataTransferECU });
+    cy.get('.canvas-placeholder').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransferECU });
     cy.get('.canvas-placeholder').first().trigger('dragend');
 
     // 2. Save the design

@@ -108,8 +108,13 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
     let newPins: Pin[] = [];
     if (componentType === 'Connector A') {
       newPins = [{ id: 'p1', xOffset: 0, yOffset: 10 }, { id: 'p2', xOffset: 0, yOffset: 20 }];
-    } else if (componentType === 'Sensor B') {
-      newPins = [{ id: 'p1', xOffset: 0, yOffset: 10 }];
+    } else if (componentType === 'ECU A') {
+      newPins = [
+        { id: 'p1', xOffset: 0, yOffset: 10 },
+        { id: 'p2', xOffset: 0, yOffset: 20 },
+        { id: 'p3', xOffset: 0, yOffset: 30 },
+        { id: 'p4', xOffset: 0, yOffset: 40 },
+      ];
     }
 
     const newComponent: Component = {

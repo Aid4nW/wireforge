@@ -16,15 +16,19 @@ describe('BOM Export Workflow', () => {
   it('should generate and download a correct Bill of Materials CSV', () => {
     // REQ: REQ-FUNC-BOM-001 (Automatic Bill of Materials Generation)
     // 1. Create a design (drag and drop components)
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData('component/type', 'Connector A');
-    cy.get('li').contains('Connector A').trigger('dragstart', { dataTransfer });
-    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer });
+    // Open the Connector menu and drag Connector A
+    cy.get('.component-category button').contains('Connector').click();
+    const dataTransferA = new DataTransfer();
+    dataTransferA.setData('component/type', 'Connector A');
+    cy.get('.component-category ul li').contains('Connector A').trigger('dragstart', { dataTransfer: dataTransferA });
+    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 200, clientY: 200, dataTransfer: dataTransferA });
 
-    const dataTransfer2 = new DataTransfer();
-    dataTransfer2.setData('component/type', 'Sensor B');
-    cy.get('li').contains('Sensor B').trigger('dragstart', { dataTransfer: dataTransfer2 });
-    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransfer2 });
+    // Open the ECU menu and drag ECU A
+    cy.get('.component-category button').contains('ECU').click();
+    const dataTransferECU = new DataTransfer();
+    dataTransferECU.setData('component/type', 'ECU A');
+    cy.get('.component-category ul li').contains('ECU A').trigger('dragstart', { dataTransfer: dataTransferECU });
+    cy.get('[data-testid="harness-canvas-wrapper"]').first().trigger('drop', { clientX: 400, clientY: 200, dataTransfer: dataTransferECU });
 
     // Wait for the component to be added to the state
     cy.window().its('harnessState.components').should('have.length', 2);
@@ -40,7 +44,7 @@ describe('BOM Export Workflow', () => {
     cy.readFile(filePath, { timeout: 10000 }).should('exist').then((content) => {
       expect(content).to.include('Component,Quantity');
       expect(content).to.include('Connector A,1');
-      expect(content).to.include('Sensor B,1');
+      expect(content).to.include('ECU A,1');
       expect(content).to.include('\nWire,Quantity\n');
       expect(content).to.include('Total Wires,0'); // No wires drawn in this test
     });

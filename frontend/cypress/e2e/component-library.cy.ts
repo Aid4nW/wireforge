@@ -6,10 +6,31 @@ describe('Component Library', () => {
   });
 
   it('should display a list of pre-populated components', () => {
-    cy.get('aside ul').should('be.visible');
-    cy.log('Component library should be visible');
-    cy.get('aside ul li').should('have.length.at.least', 2); // At least two components should be visible
-    cy.get('aside ul li').contains('Connector A').should('be.visible');
-    cy.get('aside ul li').contains('Sensor B').should('be.visible');
+    // Verify the main component library div is visible
+    cy.get('[data-testid="component-library"]').should('be.visible');
+
+    // Test Connector submenu
+    cy.get('.component-category button').contains('Connector').click();
+    cy.get('.component-category ul li').contains('Connector A').should('be.visible');
+    cy.get('.component-category ul li').contains('Connector B').should('be.visible');
+    cy.get('.component-category button').contains('Connector').click(); // Close menu
+
+    // Test ECU submenu
+    cy.get('.component-category button').contains('ECU').click();
+    cy.get('.component-category ul li').contains('ECU A').should('be.visible');
+    cy.get('.component-category ul li').contains('ECU B').should('be.visible');
+    cy.get('.component-category button').contains('ECU').click(); // Close menu
+
+    // Test Fuel submenu
+    cy.get('.component-category button').contains('Fuel').click();
+    cy.get('.component-category ul li').contains('Fuel Pump').should('be.visible');
+    cy.get('.component-category ul li').contains('Fuel Injector').should('be.visible');
+    cy.get('.component-category button').contains('Fuel').click(); // Close menu
+
+    // Test Ignition submenu
+    cy.get('.component-category button').contains('Ignition').click();
+    cy.get('.component-category ul li').contains('Ignition Coil').should('be.visible');
+    cy.get('.component-category ul li').contains('Spark Plug').should('be.visible');
+    cy.get('.component-category button').contains('Ignition').click(); // Close menu
   });
 });
