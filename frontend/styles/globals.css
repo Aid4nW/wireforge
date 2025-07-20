@@ -185,16 +185,122 @@ body.dark-mode main {
 
 
 /* Component Library Styling */
-aside ul[data-testid="component-library"] {
+div[data-testid="component-library"] {
+    margin-bottom: 20px; /* Add space below the component library */
+}
+
+div[data-testid="component-library"] h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 19px;
+    color: var(--aside-h3-color-light);
+    transition: color 0.3s ease;
+}
+
+body.dark-mode div[data-testid="component-library"] h3 {
+    color: var(--aside-h3-color-dark);
+}
+
+.component-category {
+    margin-bottom: 10px;
+    border: 1px solid var(--aside-border-light);
+    border-radius: 8px;
+    background-color: var(--aside-bg-light);
+    box-shadow: 0 2px 4px var(--aside-shadow-light);
+    overflow: hidden; /* Ensures content doesn't spill out */
+}
+
+body.dark-mode .component-category {
+    border-color: var(--aside-border-dark);
+    background-color: var(--aside-bg-dark);
+    box-shadow: 0 2px 4px var(--aside-shadow-dark);
+}
+
+.component-category button {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: var(--aside-link-hover-bg-light);
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--aside-link-hover-color-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .component-category button {
+    background-color: var(--aside-link-hover-bg-dark);
+    color: var(--aside-link-hover-color-dark);
+}
+
+.component-category button:hover {
+    background-color: var(--aside-link-hover-color-light);
+    color: var(--aside-link-hover-bg-light);
+}
+
+body.dark-mode .component-category button:hover {
+    background-color: var(--aside-link-hover-color-dark);
+    color: var(--aside-link-hover-bg-dark);
+}
+
+.component-category ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 200px; /* Fixed width for the component library */
     background-color: var(--aside-bg-light);
-    border: 1px solid var(--aside-border-light);
+    border-top: 1px solid var(--aside-border-light);
+}
+
+body.dark-mode .component-category ul {
+    background-color: var(--aside-bg-dark);
+    border-top-color: var(--aside-border-dark);
+}
+
+.component-category ul li {
+    padding: 8px 15px;
+    cursor: grab;
+    font-size: 14px;
+    color: var(--aside-link-color-light);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode .component-category ul li {
+    color: var(--aside-link-color-dark);
+}
+
+.component-category ul li:hover {
+    background-color: var(--aside-link-hover-bg-light);
+    color: var(--aside-link-hover-color-light);
+}
+
+body.dark-mode .component-category ul li:hover {
+    background-color: var(--aside-link-hover-bg-dark);
+    color: var(--aside-link-hover-color-dark);
+}
+
+/* Existing component library styling, adjusted for the new structure */
+/* This targets the overall div, not the ul directly anymore */
+/* The previous ul[data-testid="component-library"] styling is now handled by .component-category and its children */
+
+/* Remove the old styling for ul[data-testid="component-library"] if it's no longer needed */
+/* aside ul[data-testid="component-library"] is replaced by div[data-testid="component-library"] and .component-category */
+
+/* Keep existing canvas styling */
+.canvas-placeholder {
+    flex-grow: 1; /* Allow canvas to take available space */
+    background-color: var(--canvas-bg-light);
+    border: 1px dashed var(--canvas-border-light);
+    height: 620px; /* Set a fixed height for the canvas */
+    color: var(--canvas-text-light);
+    font-size: 26px;
     border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 5px var(--aside-shadow-light);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+body.dark-mode .canvas-placeholder {
+    background-color: var(--canvas-bg-dark);
+    border-color: var(--canvas-border-dark);
+    color: var(--canvas-text-dark);
 }
 body.dark-mode aside ul[data-testid="component-library"] {
     background-color: var(--aside-bg-dark);
