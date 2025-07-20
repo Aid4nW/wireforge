@@ -130,7 +130,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     </header>
     <div className="container">
         <aside>
-            <h3>Components</h3>
+            
             <ComponentLibrary />
             <h3>Tools</h3>
             <ul>
