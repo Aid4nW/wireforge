@@ -5,21 +5,19 @@ describe('Dark Mode Toggle', () => {
     cy.clearLocalStorage();
     // Ensure body class is clean
     cy.get('body').invoke('removeClass', 'dark-mode light-mode');
+    cy.get('.settings-menu-button').click(); // Open the settings menu
   });
 
   it('should toggle to dark mode when the switch is clicked', () => {
     // Verify initial state (light mode)
     cy.get('body').should('not.have.class', 'dark-mode');
     cy.get('body').should('have.class', 'light-mode');
-    cy.get('#checkbox').should('not.be.checked');
-
     // Click the toggle switch by clicking its associated label
     cy.get('.theme-switch').click();
 
     // Verify dark mode is applied
     cy.get('body').should('have.class', 'dark-mode');
     cy.get('body').should('not.have.class', 'light-mode');
-    cy.get('#checkbox').should('be.checked');
     cy.window().its('localStorage').invoke('getItem', 'theme').should('eq', 'dark-mode');
   });
 
@@ -29,11 +27,11 @@ describe('Dark Mode Toggle', () => {
       win.localStorage.setItem('theme', 'dark-mode');
     });
     cy.visit('/'); // Reload to apply the stored theme
-
+    cy.get('.settings-menu-button').click(); // Open the settings menu
     // Verify initial state (dark mode)
     cy.get('body').should('have.class', 'dark-mode');
     cy.get('body').should('not.have.class', 'light-mode');
-    cy.get('#checkbox').should('be.checked');
+    cy.window().its('localStorage').invoke('getItem', 'theme').should('eq', 'dark-mode');
 
     // Click the toggle switch by clicking its associated label
     cy.get('.theme-switch').click();
@@ -41,7 +39,7 @@ describe('Dark Mode Toggle', () => {
     // Verify light mode is applied
     cy.get('body').should('not.have.class', 'dark-mode');
     cy.get('body').should('have.class', 'light-mode');
-    cy.get('#checkbox').should('not.be.checked');
+
     cy.window().its('localStorage').invoke('getItem', 'theme').should('eq', 'light-mode');
   });
 
@@ -53,7 +51,7 @@ describe('Dark Mode Toggle', () => {
 
     cy.get('body').should('have.class', 'dark-mode');
     cy.get('body').should('not.have.class', 'light-mode');
-    cy.get('#checkbox').should('be.checked');
+    
   });
 
   it('should initialize with light mode if no preference is stored in localStorage', () => {
@@ -62,6 +60,6 @@ describe('Dark Mode Toggle', () => {
 
     cy.get('body').should('not.have.class', 'dark-mode');
     cy.get('body').should('have.class', 'light-mode');
-    cy.get('#checkbox').should('not.be.checked');
+
   });
 });

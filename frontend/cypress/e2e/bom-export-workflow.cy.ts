@@ -30,7 +30,8 @@ describe('BOM Export Workflow', () => {
     cy.window().its('harnessState.components').should('have.length', 2);
 
     // 2. Click the Generate BOM button
-    cy.get('.controls button').contains('Export BOM').click();
+    cy.get('.file-menu-button').click(); // Open the File menu
+    cy.get('.file-menu-dropdown a').contains('Export BOM').click(); // Click Export BOM
 
     // 3. Verify the file is downloaded and its content
     const downloadsFolder = Cypress.config('downloadsFolder');

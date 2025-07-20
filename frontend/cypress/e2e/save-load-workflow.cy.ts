@@ -26,7 +26,8 @@ describe('Save/Load Functionality', () => {
     cy.get('.canvas-placeholder').first().trigger('dragend');
 
     // 2. Save the design
-    cy.get('.controls button').contains('Save Project').click();
+    cy.get('.file-menu-button').click(); // Open the File menu
+    cy.get('.file-menu-dropdown a').contains('Save').click(); // Click Save
 
     // 3. Reload the page
     cy.reload();
