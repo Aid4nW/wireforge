@@ -95,6 +95,15 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     setMenuOpen(false);
   }
 
+  const handleNew = () => {
+    if (window.confirm('Are you sure you want to clear the current design? All unsaved changes will be lost.')) {
+      setComponents([]);
+      setWires([]);
+      saveDesignToLocalStorage([], []); // Clear local storage as well
+    }
+    setMenuOpen(false);
+  }
+
   return (
     <>
       <header>
@@ -106,6 +115,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
               </button>
               {isMenuOpen && (
                 <div className="file-menu-dropdown">
+                  <a href="#" onClick={handleNew}>New</a>
                   <a href="#" onClick={handleSave}>Save</a>
                   <a href="#" onClick={handleLoad}>Load</a>
                   <a href="#" onClick={downloadBOM}>Export BOM</a>
