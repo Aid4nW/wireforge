@@ -35,6 +35,9 @@ describe('App', () => {
     render(<App Component={MockComponent} pageProps={mockPageProps} />);
     expect(document.body).toHaveClass('light-mode');
     expect(document.body).not.toHaveClass('dark-mode');
+    
+    // Open settings menu to reveal the checkbox
+    fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
     expect(screen.getByRole('checkbox')).not.toBeChecked();
   });
 
@@ -43,11 +46,17 @@ describe('App', () => {
     render(<App Component={MockComponent} pageProps={mockPageProps} />);
     expect(document.body).toHaveClass('dark-mode');
     expect(document.body).not.toHaveClass('light-mode');
+
+    // Open settings menu to reveal the checkbox
+    fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
     expect(screen.getByRole('checkbox')).toBeChecked();
   });
 
   it('toggles to dark mode and saves preference to localStorage when switch is clicked', () => {
     render(<App Component={MockComponent} pageProps={mockPageProps} />);
+    
+    // Open settings menu to reveal the checkbox
+    fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
     const toggle = screen.getByRole('checkbox');
 
     act(() => {
@@ -64,6 +73,9 @@ describe('App', () => {
     // Start in dark mode
     localStorage.setItem('theme', 'dark-mode');
     render(<App Component={MockComponent} pageProps={mockPageProps} />);
+    
+    // Open settings menu to reveal the checkbox
+    fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
     const toggle = screen.getByRole('checkbox');
 
     act(() => {

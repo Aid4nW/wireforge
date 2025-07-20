@@ -96,11 +96,11 @@ body.dark-mode header h1 {
 nav {
     display: flex;
     align-items: center; /* Align items vertically in nav */
+    gap: 30px; /* Add space between nav items */
 }
 nav a {
     text-decoration: none;
     color: var(--nav-link-color-light);
-    margin-left: 30px;
     font-weight: 500;
     transition: color 0.3s ease;
 }
@@ -182,21 +182,7 @@ body.dark-mode main {
     flex-grow: 1; /* Allow main content to take available space */
 }
 
-.canvas-placeholder {
-    flex-grow: 1; /* Allow canvas to take available space */
-    background-color: var(--canvas-bg-light);
-    border: 1px dashed var(--canvas-border-light);
-    height: 100%; /* Fill parent height */
-    color: var(--canvas-text-light);
-    font-size: 26px;
-    border-radius: 10px;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-body.dark-mode .canvas-placeholder {
-    background-color: var(--canvas-bg-dark);
-    border-color: var(--canvas-border-dark);
-    color: var(--canvas-text-dark);
-}
+
 
 /* Component Library Styling */
 aside ul[data-testid="component-library"] {
@@ -233,10 +219,11 @@ aside ul[data-testid="component-library"] li:hover {
     opacity: 0.8;
 }
 
-.controls {
+.canvas-placeholder {
+    flex-grow: 1; /* Allow canvas to take available space */
     background-color: var(--canvas-bg-light);
     border: 1px dashed var(--canvas-border-light);
-    height: 620px;
+    height: 620px; /* Set a fixed height for the canvas */
     color: var(--canvas-text-light);
     font-size: 26px;
     border-radius: 10px;
@@ -247,39 +234,8 @@ body.dark-mode .canvas-placeholder {
     border-color: var(--canvas-border-dark);
     color: var(--canvas-text-dark);
 }
-.controls {
-    background-color: var(--controls-bg-light);
-    padding: 22px;
-    margin-top: 25px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px var(--controls-shadow-light);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-body.dark-mode .controls {
-    background-color: var(--controls-bg-dark);
-    box-shadow: 0 2px 5px var(--controls-shadow-dark);
-}
-.controls button {
-    background-color: var(--button-bg-light);
-    color: var(--button-color-light);
-    border: none;
-    padding: 11px 22px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-right: 12px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-.controls button:hover {
-    background-color: var(--button-hover-light);
-}
-body.dark-mode .controls button {
-    background-color: var(--button-bg-dark);
-    color: var(--button-color-dark);
-}
-body.dark-mode .controls button:hover {
-    background-color: var(--button-hover-dark);
-}
+
+
 footer {
     background-color: var(--footer-bg-light);
     color: var(--footer-color-light);
@@ -289,22 +245,109 @@ footer {
     margin-top: 25px;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-body.dark-mode footer {
-    background-color: var(--footer-bg-dark);
-    color: var(--footer-color-dark);
+
+/* File Menu */
+.file-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.file-menu-button {
+    background-color: transparent;
+    color: var(--nav-link-color-light);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0;
+}
+
+body.dark-mode .file-menu-button {
+    color: var(--nav-link-color-dark);
+}
+
+.file-menu-dropdown {
+    display: block;
+    position: absolute;
+    background-color: var(--header-bg-light);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 6px;
+    padding: 6px 0;
+}
+
+body.dark-mode .file-menu-dropdown {
+    background-color: var(--header-bg-dark);
+}
+
+.file-menu-dropdown a {
+    color: var(--nav-link-color-light);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    margin-left: 0;
+    font-weight: normal;
+}
+
+body.dark-mode .file-menu-dropdown a {
+    color: var(--nav-link-color-dark);
+}
+
+.file-menu-dropdown a:hover {
+    background-color: var(--aside-link-hover-bg-light);
+    color: var(--aside-link-hover-color-light);
+}
+
+body.dark-mode .file-menu-dropdown a:hover {
+    background-color: var(--aside-link-hover-bg-dark);
+    color: var(--aside-link-hover-color-dark);
+}
+
+/* Settings Menu */
+.settings-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.settings-menu-button {
+    background-color: transparent;
+    color: var(--nav-link-color-light);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0;
+}
+
+body.dark-mode .settings-menu-button {
+    color: var(--nav-link-color-dark);
+}
+
+.settings-menu-dropdown {
+    display: block;
+    position: absolute;
+    background-color: var(--header-bg-light);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 6px;
+    padding: 6px 0;
+    right: 0; /* Align to the right of the button */
+}
+
+body.dark-mode .settings-menu-dropdown {
+    background-color: var(--header-bg-dark);
 }
 
 /* Dark Mode Toggle Switch */
 .theme-switch-wrapper {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
     display: flex;
     align-items: center;
-    background-color: var(--controls-bg-light); /* Use control background for consistency */
+    justify-content: space-between; /* Distribute space between text and toggle */
     padding: 10px 15px;
     border-radius: 8px;
+    background-color: var(--controls-bg-light); /* Use control background for consistency */
     box-shadow: 0 2px 5px var(--controls-shadow-light);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -321,103 +364,49 @@ body.dark-mode .theme-switch-wrapper span {
     color: var(--text-color-dark);
 }
 .theme-switch {
-    display: inline-block;
-    height: 24px;
     position: relative;
-    width: 48px;
+    display: inline-block;
+    width: 52px; /* Increased width */
+    height: 26px; /* Increased height */
 }
 .theme-switch input {
-    display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 .slider {
-    background-color: #ccc;
-    bottom: 0;
+    position: absolute;
     cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
     top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
     transition: .4s;
-    border-radius: 24px;
-}
-.slider:before {
-    background-color: #fff;
-    bottom: 4px;
-    content: "";
-    height: 16px;
-    left: 4px;
-    position: absolute;
-    transition: .4s;
-    width: 16px;
-    border-radius: 50%;
-}
-input:checked + .slider {
-    background-color: #5a8dff;
-}
-input:checked + .slider:before {
-    transform: translateX(24px);
+    border-radius: 26px; /* Adjusted border-radius */
 }
 
-/* Dark Mode Toggle Switch */
-.theme-switch-wrapper {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    background-color: var(--controls-bg-light); /* Use control background for consistency */
-    padding: 10px 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px var(--controls-shadow-light);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-body.dark-mode .theme-switch-wrapper {
-    background-color: var(--controls-bg-dark);
-    box-shadow: 0 2px 5px var(--controls-shadow-dark);
-}
-.theme-switch-wrapper span {
-    margin-right: 10px;
-    color: var(--text-color-light);
-    transition: color 0.3s ease;
-}
-body.dark-mode .theme-switch-wrapper span {
-    color: var(--text-color-dark);
-}
-.theme-switch {
-    display: inline-block;
-    height: 24px;
-    position: relative;
-    width: 48px;
-}
-.theme-switch input {
-    display: none;
-}
-.slider {
-    background-color: #ccc;
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: .4s;
-    border-radius: 24px;
-}
+
 .slider:before {
-    background-color: #fff;
-    bottom: 4px;
-    content: "";
-    height: 16px;
-    left: 4px;
     position: absolute;
-    transition: .4s;
-    width: 16px;
+    content: "";
+    height: 18px; /* Increased height */
+    width: 18px; /* Increased width */
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s left, .4s background-color;
+    transition: .4s left, .4s background-color;
     border-radius: 50%;
 }
 input:checked + .slider {
     background-color: #5a8dff;
 }
-input:checked + .slider:before {
-    transform: translateX(24px);
+input:focus + .slider {
+    box-shadow: 0 0 1px #5a8dff;
 }
+input:checked + .slider:before {
+    left: 15px; /* Corrected value for right alignment */
+}
+
