@@ -13,3 +13,4 @@ This section details the functional requirements for the WireForge project, desc
    CollaborationFeatures.rst
    DataExchange.rst
    AutomatedDesignValidation.rst
+   ClearDesign.rst
