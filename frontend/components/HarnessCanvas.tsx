@@ -58,12 +58,46 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
   const [isDraggingComponent, setIsDraggingComponent] = useState(false);
   const [draggedComponentId, setDraggedComponentId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number, y: number } | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedItemType, setSelectedItemType] = useState<'component' | 'wire' | null>(null);
   const [stageDimensions, setStageDimensions] = useState({
     width: 0,
     height: 0,
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
+
+  const handleDelete = () => {
+    if (selectedItemId && selectedItemType) {
+      if (selectedItemType === 'component') {
+        setComponents(prevComponents => {
+          const remainingComponents = prevComponents.filter(comp => comp.id !== selectedItemId);
+          // Also remove any wires connected to the deleted component
+          setWires(prevWires => prevWires.filter(wire => 
+            wire.startComponentId !== selectedItemId && wire.endComponentId !== selectedItemId
+          ));
+          return remainingComponents;
+        });
+      } else if (selectedItemType === 'wire') {
+        setWires(prevWires => prevWires.filter(wire => wire.id !== selectedItemId));
+      }
+      setSelectedItemId(null);
+      setSelectedItemType(null);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        handleDelete();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedItemId, selectedItemType, components, wires]); // Depend on selected items and data for handleDelete
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -223,6 +257,10 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
               x={comp.x}
               y={comp.y}
               draggable
+              onClick={() => {
+                setSelectedItemId(comp.id);
+                setSelectedItemType('component');
+              }}
               onDragStart={(e) => handleMouseDownOnComponent(e, comp)}
               onDragEnd={(e) => {
                 setIsDraggingComponent(false);
@@ -242,8 +280,8 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
                 width={100} // Placeholder width
                 height={50} // Placeholder height
                 fill="lightblue"
-                stroke="blue"
-                strokeWidth={1}
+                stroke={selectedItemId === comp.id && selectedItemType === 'component' ? 'red' : 'blue'}
+                strokeWidth={selectedItemId === comp.id && selectedItemType === 'component' ? 3 : 1}
               />
               <Text text={comp.type} x={5} y={5} />
               {comp.pins.map((pin) => (
@@ -282,9 +320,13 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
               <Line
                 key={wire.id}
                 points={[startPos.x, startPos.y, endPos.x, endPos.y]}
-                stroke="green"
-                strokeWidth={2}
+                stroke={selectedItemId === wire.id && selectedItemType === 'wire' ? 'red' : 'green'}
+                strokeWidth={selectedItemId === wire.id && selectedItemType === 'wire' ? 4 : 2}
                 data-testid="konva-line-perm"
+                onClick={() => {
+                  setSelectedItemId(wire.id);
+                  setSelectedItemType('wire');
+                }}
               />
             );
           })}
