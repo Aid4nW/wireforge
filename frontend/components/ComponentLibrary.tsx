@@ -9,6 +9,7 @@ const ComponentLibrary: React.FC = () => {
 
   return (
     <div data-testid="component-library">
+      <h3>Components</h3>
       
       <div className="component-category">
         <button onClick={() => toggleMenu('Connector')}>Connector</button>
