@@ -78,7 +78,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
 
   const handleSave = () => {
     saveDesignToLocalStorage(components, wires);
-    console.log('Design saved!');
+    
     setMenuOpen(false);
   };
 
@@ -86,7 +86,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     const loadedDesign = loadDesignFromLocalStorage();
     setComponents(loadedDesign.components);
     setWires(loadedDesign.wires);
-    console.log('Design loaded!');
+    
     setMenuOpen(false);
   };
 
