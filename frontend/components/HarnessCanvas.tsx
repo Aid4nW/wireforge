@@ -85,6 +85,10 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
       }
       setSelectedItemId(null);
       setSelectedItemType(null);
+      if (window.Cypress) {
+        window.harnessState.selectedItemId = null;
+        window.harnessState.selectedItemType = null;
+      }
     }
   }, [selectedItemId, selectedItemType, setComponents, setWires]);
 

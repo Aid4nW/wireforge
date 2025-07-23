@@ -1,3 +1,4 @@
+export {};
 /// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
@@ -31,7 +32,6 @@ declare global {
       assertWireCount(expectedCount: number): Chainable<void>;
       triggerPinClick(componentId: string, pinId: string): Chainable<void>;
       selectComponent(componentId: string): Chainable<void>;
-    }
   }
   interface Window {
       harnessState: {
@@ -43,7 +43,6 @@ declare global {
         setSelectedItemType: (type: 'component' | 'wire' | null) => void;
         handlePinClick: (componentId: string, pin: any, componentX: number, componentY: number) => void;
       };
-    }
   }
 }
 }
@@ -82,3 +81,4 @@ Cypress.Commands.add('selectComponent', (componentId: string) => {
       throw new Error('setSelectedItemId or setSelectedItemType is not exposed on window.harnessState');
     }
   });
+});

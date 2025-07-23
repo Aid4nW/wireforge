@@ -51,8 +51,13 @@ describe('Core Design Workflow', () => {
 
         cy.log('Attempting to click pin p1 on Connector A');
         cy.triggerPinClick(connectorA.id, 'p1');
+        cy.wait(1000); // Wait for first pin click to register
         cy.log('Attempting to click pin p1 on ECU A');
         cy.triggerPinClick(ecuA.id, 'p1');
+        cy.wait(1000); // Wait for wire to be created
+        cy.window().its('harnessState.wires').then((wires) => {
+          cy.log('harnessState.wires after pin clicks:', wires);
+        });
       } else {
         throw new Error('Could not find Connector A or ECU A on canvas');
       }
@@ -60,5 +65,8 @@ describe('Core Design Workflow', () => {
 
     // Assert that one wire is drawn
     cy.assertWireCount(1);
+    cy.window().its('harnessState.wires').then((wires) => {
+      cy.log('harnessState.wires after wire creation:', wires);
+    });
   });
 });
