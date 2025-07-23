@@ -30,8 +30,22 @@ declare global {
     interface Chainable {
       assertWireCount(expectedCount: number): Chainable<void>;
       triggerPinClick(componentId: string, pinId: string): Chainable<void>;
+      selectComponent(componentId: string): Chainable<void>;
     }
   }
+  interface Window {
+      harnessState: {
+        components: any[];
+        wires: any[];
+        selectedItemId: string | null;
+        selectedItemType: 'component' | 'wire' | null;
+        setSelectedItemId: (id: string | null) => void;
+        setSelectedItemType: (type: 'component' | 'wire' | null) => void;
+        handlePinClick: (componentId: string, pin: any, componentX: number, componentY: number) => void;
+      };
+    }
+  }
+}
 }
 
 Cypress.Commands.add('assertWireCount', (expectedCount: number) => {
@@ -39,7 +53,8 @@ Cypress.Commands.add('assertWireCount', (expectedCount: number) => {
 });
 
 Cypress.Commands.add('triggerPinClick', (componentId: string, pinId: string) => {
-  cy.window().its('harnessState.components').then((components) => {
+  cy.window().then((win) => {
+    const { components, handlePinClick } = win.harnessState;
     const component = components.find((comp: any) => comp.id === componentId);
     if (!component) {
       throw new Error(`Component with ID ${componentId} not found`);
@@ -48,10 +63,22 @@ Cypress.Commands.add('triggerPinClick', (componentId: string, pinId: string) => 
     if (!pin) {
       throw new Error(`Pin with ID ${pinId} not found on component ${componentId}`);
     }
-
-    const pinAbsoluteX = component.x + pin.xOffset;
-    const pinAbsoluteY = component.y + pin.yOffset;
-
-    cy.get('canvas').click(pinAbsoluteX, pinAbsoluteY, { force: true });
+    // Directly call the handlePinClick function exposed on the window
+    if (handlePinClick) {
+      handlePinClick(component.id, pin, component.x, component.y);
+    } else {
+      throw new Error('handlePinClick is not exposed on window.harnessState');
+    }
   });
 });
+
+Cypress.Commands.add('selectComponent', (componentId: string) => {
+  cy.window().then((win) => {
+    const { setSelectedItemId, setSelectedItemType } = win.harnessState;
+    if (setSelectedItemId && setSelectedItemType) {
+      setSelectedItemId(componentId);
+      setSelectedItemType('component');
+    } else {
+      throw new Error('setSelectedItemId or setSelectedItemType is not exposed on window.harnessState');
+    }
+  });

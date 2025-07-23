@@ -23,7 +23,7 @@ jest.mock('react-konva', () => ({
   Layer: ({ children }: any) => <div data-testid="konva-layer">{children}</div>,
   Group: ({ children, onDragEnd, ...props }: any) => {
     mockGroupOnDragEnd = onDragEnd;
-    return <div data-testid="konva-group" {...props}>{children}</div>;
+    return <div data-testid={props['data-testid']} {...props}>{children}</div>;
   },
   Rect: (props: any) => <div data-testid="konva-rect" data-props={JSON.stringify(props)} />,
   Text: (props: any) => <div data-testid="konva-text" data-props={JSON.stringify(props)}>{props.text}</div>,
@@ -144,7 +144,7 @@ describe('HarnessCanvas', () => {
 
     const { container } = render(<HarnessCanvas {...defaultProps} components={initialComponents} />);
 
-    const componentGroup = screen.getByTestId('konva-group');
+    const componentGroup = screen.getByTestId('konva-group-comp-1');
 
     // Simulate drag start
     fireEvent.dragStart(componentGroup);

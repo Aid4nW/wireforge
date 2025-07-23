@@ -1,13 +1,21 @@
 // REQ-FUNC-CAN-001: Visual Component Placement
 // REQ-FUNC-CAN-002: Wire and Connection Drawing
 // REQ-FUNC-LIB-001: Pre-populated Component Library (handling dropped components)
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { saveDesignToLocalStorage } from '../utils/localStorage';
 
 // Extend the Window interface to include harnessState for Cypress testing
 declare global {
   interface Window {
-    harnessState?: { components: Component[]; wires: Wire[] };
+    harnessState?: {
+      components: Component[];
+      wires: Wire[];
+      selectedItemId: string | null;
+      selectedItemType: 'component' | 'wire' | null;
+      setSelectedItemId: React.Dispatch<React.SetStateAction<string | null>>;
+      setSelectedItemType: React.Dispatch<React.SetStateAction<'component' | 'wire' | null>>;
+      handlePinClick: (componentId: string, pin: Pin, componentX: number, componentY: number) => void;
+    };
     triggerPinClick?: (componentId: string, pinId: string) => void;
     Cypress?: any;
   }
@@ -46,20 +54,14 @@ import { Stage, Layer, Rect, Text, Circle, Line, Group } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 
 const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires }) => {
-  // Expose state for Cypress testing
-  useEffect(() => {
-    if (window.Cypress) {
-      window.harnessState = { components, wires };
-    }
-  }, [components, wires]);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedItemType, setSelectedItemType] = useState<'component' | 'wire' | null>(null);
   const [drawingWire, setDrawingWire] = useState(false);
   const [startPin, setStartPin] = useState<{ componentId: string, pinId: string, x: number, y: number } | null>(null);
   const [currentMousePos, setCurrentMousePos] = useState<{ x: number, y: number } | null>(null);
   const [isDraggingComponent, setIsDraggingComponent] = useState(false);
   const [draggedComponentId, setDraggedComponentId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number, y: number } | null>(null);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [selectedItemType, setSelectedItemType] = useState<'component' | 'wire' | null>(null);
   const [stageDimensions, setStageDimensions] = useState({
     width: 0,
     height: 0,
@@ -67,7 +69,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (selectedItemId && selectedItemType) {
       if (selectedItemType === 'component') {
         setComponents(prevComponents => {
@@ -84,7 +86,53 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
       setSelectedItemId(null);
       setSelectedItemType(null);
     }
-  };
+  }, [selectedItemId, selectedItemType, setComponents, setWires]);
+
+  const handlePinClick = useCallback((componentId: string, pin: Pin, componentX: number, componentY: number) => {
+    // Prevent pin click from triggering component drag
+    if (isDraggingComponent) return;
+
+    const pinAbsoluteX = componentX + pin.xOffset;
+    const pinAbsoluteY = componentY + pin.yOffset;
+
+    if (!drawingWire) {
+      setDrawingWire(true);
+      setStartPin({ componentId, pinId: pin.id, x: pinAbsoluteX, y: pinAbsoluteY });
+    } else if (startPin && (startPin.componentId !== componentId || startPin.pinId !== pin.id)) {
+      // Complete the wire
+      const newWire: Wire = {
+        id: `wire-${Date.now()}`,
+        startComponentId: startPin.componentId,
+        startPinId: startPin.pinId,
+        endComponentId: componentId,
+        endPinId: pin.id,
+      };
+      setWires((prevWires) => [...prevWires, newWire]);
+      setDrawingWire(false);
+      setStartPin(null);
+      setCurrentMousePos(null);
+    } else if (startPin && startPin.componentId === componentId && startPin.pinId === pin.id) {
+      // Clicked the same pin again, cancel drawing
+      setDrawingWire(false);
+      setStartPin(null);
+      setCurrentMousePos(null);
+    }
+  }, [drawingWire, isDraggingComponent, setWires, startPin]);
+
+  // Expose state for Cypress testing
+  useEffect(() => {
+    if (window.Cypress) {
+      window.harnessState = {
+        components,
+        wires,
+        selectedItemId,
+        selectedItemType,
+        setSelectedItemId,
+        setSelectedItemType,
+        handlePinClick,
+      };
+    }
+  }, [components, wires, selectedItemId, selectedItemType, handlePinClick]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -97,7 +145,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedItemId, selectedItemType, components, wires]); // Depend on selected items and data for handleDelete
+  }, [handleDelete]);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -159,37 +207,6 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
       pins: newPins,
     };
     setComponents((prevComponents) => [...prevComponents, newComponent]);
-  };
-
-  const handlePinClick = (componentId: string, pin: Pin, componentX: number, componentY: number) => {
-    // Prevent pin click from triggering component drag
-    if (isDraggingComponent) return;
-
-    const pinAbsoluteX = componentX + pin.xOffset;
-    const pinAbsoluteY = componentY + pin.yOffset;
-
-    if (!drawingWire) {
-      setDrawingWire(true);
-      setStartPin({ componentId, pinId: pin.id, x: pinAbsoluteX, y: pinAbsoluteY });
-    } else if (startPin && (startPin.componentId !== componentId || startPin.pinId !== pin.id)) {
-      // Complete the wire
-      const newWire: Wire = {
-        id: `wire-${Date.now()}`,
-        startComponentId: startPin.componentId,
-        startPinId: startPin.pinId,
-        endComponentId: componentId,
-        endPinId: pin.id,
-      };
-      setWires((prevWires) => [...prevWires, newWire]);
-      setDrawingWire(false);
-      setStartPin(null);
-      setCurrentMousePos(null);
-    } else if (startPin && startPin.componentId === componentId && startPin.pinId === pin.id) {
-      // Clicked the same pin again, cancel drawing
-      setDrawingWire(false);
-      setStartPin(null);
-      setCurrentMousePos(null);
-    }
   };
 
   const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
@@ -257,6 +274,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
               x={comp.x}
               y={comp.y}
               draggable
+              data-testid={`konva-group-${comp.id}`}
               onClick={() => {
                 setSelectedItemId(comp.id);
                 setSelectedItemType('component');
@@ -282,6 +300,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
                 fill="lightblue"
                 stroke={selectedItemId === comp.id && selectedItemType === 'component' ? 'red' : 'blue'}
                 strokeWidth={selectedItemId === comp.id && selectedItemType === 'component' ? 3 : 1}
+                data-testid={`konva-rect-${comp.id}`}
               />
               <Text text={comp.type} x={5} y={5} />
               {comp.pins.map((pin) => (
