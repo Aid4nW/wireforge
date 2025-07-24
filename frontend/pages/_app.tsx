@@ -6,6 +6,9 @@ import ComponentLibrary from '../components/ComponentLibrary'
 import SettingsPanel from '../components/SettingsPanel';
 import { loadDesignFromLocalStorage, saveDesignToLocalStorage } from '../utils/localStorage';
 import { useBOMGenerator } from '../components/BOMGenerator';
+import ExportOptionsModal from '../components/ExportOptionsModal';
+import BomPdfDocument from '../components/BomPdfDocument';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import React from 'react';
 import Link from 'next/link';
 
@@ -32,6 +35,8 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   const [wires, setWires] = useState<Wire[]>([]);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSettingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportOptions, setExportOptions] = useState<{ selectedColumns: string[]; logo: string | null } | null>(null);
 
   // Load theme and design from local storage on initial render
   useEffect(() => {
@@ -85,6 +90,13 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     setMenuOpen(false);
   }
 
+  const handleExportBOM = (options: { selectedColumns: string[]; logo: string | null }) => {
+    setExportOptions(options);
+    setShowExportModal(false);
+  };
+
+  const availableBOMColumns = ['Component', 'Quantity', 'Wire', 'Length (mm)', 'Service Loop', 'Twist', 'Custom Properties'];
+
   return (
     <>
       <header>
@@ -99,7 +111,10 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                   <a href="#" onClick={handleNew}>New</a>
                   <a href="#" onClick={handleSave}>Save</a>
                   <a href="#" onClick={handleLoad}>Load</a>
-                  <a href="#" onClick={downloadBOM}>Export BOM</a>
+                  <a href="#" onClick={() => {
+                    setShowExportModal(true);
+                    setMenuOpen(false);
+                  }}>Export BOM</a>
                   <a href="#" onClick={handlePrint}>Print</a>
                 </div>
               )}
@@ -139,6 +154,31 @@ export default function App({ Component, pageProps }: CustomAppProps) {
     <footer>
         &copy; 2025 WireForge. All rights reserved.
     </footer>
+    {showExportModal && (
+      <ExportOptionsModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExport={handleExportBOM}
+        availableColumns={availableBOMColumns}
+        components={components}
+        wires={wires}
+      />
+    )}
+    {exportOptions && (
+      <PDFDownloadLink
+        document={<BomPdfDocument
+          components={components}
+          wires={wires}
+          selectedColumns={exportOptions.selectedColumns}
+          logo={exportOptions.logo}
+        />}
+        fileName="bill_of_materials.pdf"
+      >
+        {({ blob, url, loading, error }) => (
+          loading ? 'Generating PDF...' : 'Download PDF'
+        )}
+      </PDFDownloadLink>
+    )}
     </>
   )
 }
