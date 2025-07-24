@@ -50,6 +50,7 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
     width: 0,
     height: 0,
   });
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
 
@@ -326,40 +327,162 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
           {wires.map((wire) => {
             const startPos = getPinAbsolutePosition(wire.startComponentId, wire.startPinId);
             const endPos = getPinAbsolutePosition(wire.endComponentId, wire.endPinId);
+
+            // Calculate midpoint for service loop indicator
+            const midX = (startPos.x + endPos.x) / 2;
+            const midY = (startPos.y + endPos.y) / 2;
+
+            // Calculate a position near the start for the service loop indicator
+            const serviceLoopIndicatorX = startPos.x + (endPos.x - startPos.x) * 0.1; // 10% along the wire
+            const serviceLoopIndicatorY = startPos.y + (endPos.y - startPos.y) * 0.1; // 10% along the wire
+
             return (
-              <Line
-                key={wire.id}
-                points={[startPos.x, startPos.y, endPos.x, endPos.y]}
-                stroke={selectedItemId === wire.id && selectedItemType === 'wire' ? 'red' : 'green'}
-                strokeWidth={selectedItemId === wire.id && selectedItemType === 'wire' ? 4 : 2}
-                data-testid="konva-line-perm"
-                onClick={() => {
-                  setSelectedItemId(wire.id);
-                  setSelectedItemType('wire');
-                  if (activeTool === 'serviceLoop') {
-                    const lengthInput = prompt('Enter service loop length in mm (or type \'default\'):');
-                    if (lengthInput !== null) {
-                      const newLength: number | 'default' = lengthInput.toLowerCase() === 'default' ? 'default' : Number(lengthInput);
-                      setWires(prevWires => prevWires.map(w =>
-                        w.id === wire.id ? { ...w, serviceLoop: { length: newLength } } : w
-                      ));
+              <React.Fragment key={wire.id}>
+                <Line
+                  points={[startPos.x, startPos.y, endPos.x, endPos.y]}
+                  stroke={selectedItemId === wire.id && selectedItemType === 'wire' ? 'red' : 'green'}
+                  strokeWidth={selectedItemId === wire.id && selectedItemType === 'wire' ? 4 : 2}
+                  data-testid="konva-line-perm"
+                  onMouseEnter={(e) => {
+                    const mouseX = e.evt.clientX;
+                    const mouseY = e.evt.clientY;
+
+                    let effectiveLength = wire.length;
+                    const serviceLoopLength = wire.serviceLoop?.length === 'default' ? globalServiceLoopLength : wire.serviceLoop?.length;
+                    if (serviceLoopLength) {
+                      effectiveLength += serviceLoopLength;
                     }
-                    setActiveTool(null);
-                  } else if (activeTool === 'concentricTwist') {
-                    const pitchInput = prompt('Enter concentric twist pitch in mm (or type \'default\'):');
-                    if (pitchInput !== null) {
-                      const newPitch: number | 'default' = pitchInput.toLowerCase() === 'default' ? 'default' : Number(pitchInput);
-                      setWires(prevWires => prevWires.map(w =>
-                        w.id === wire.id ? { ...w, twist: { type: 'concentric', pitch: newPitch } } : w
-                      ));
+
+                    const twistPitch = wire.twist?.pitch === 'default' ? globalTwistPitch : wire.twist?.pitch;
+                    if (twistPitch) {
+                      effectiveLength *= 1.05; // Same 5% increase as in BOMGenerator
                     }
-                    setActiveTool(null);
-                  }
-                }}
-              />
+
+                    let tooltipText = `Length: ${effectiveLength.toFixed(2)} mm`;
+                    if (wire.serviceLoop) {
+                      tooltipText += `\nService Loop: ${wire.serviceLoop.length === 'default' ? 'Default' : wire.serviceLoop.length + 'mm'}`;
+                    }
+                    if (wire.twist) {
+                      tooltipText += `\nTwist: ${wire.twist.pitch === 'default' ? 'Default' : wire.twist.pitch + 'mm'}`;
+                    }
+
+                    setTooltip({ x: mouseX, y: mouseY, text: tooltipText });
+                  }}
+                  onMouseLeave={() => {
+                    setTooltip(null);
+                  }}
+                  onClick={() => {
+                    setSelectedItemId(wire.id);
+                    setSelectedItemType('wire');
+                    if (activeTool === 'serviceLoop') {
+                      const lengthInput = prompt('Enter service loop length in mm (or type \'default\'):');
+                      if (lengthInput !== null) {
+                        const newLength: number | 'default' = lengthInput.toLowerCase() === 'default' ? 'default' : Number(lengthInput);
+                        setWires(prevWires => prevWires.map(w =>
+                          w.id === wire.id ? { ...w, serviceLoop: { length: newLength } } : w
+                        ));
+                      }
+                      setActiveTool(null);
+                    } else if (activeTool === 'concentricTwist') {
+                      const pitchInput = prompt('Enter concentric twist pitch in mm (or type \'default\'):');
+                      if (pitchInput !== null) {
+                        const newPitch: number | 'default' = pitchInput.toLowerCase() === 'default' ? 'default' : Number(pitchInput);
+                        setWires(prevWires => prevWires.map(w =>
+                          w.id === wire.id ? { ...w, twist: { type: 'concentric', pitch: newPitch } } : w
+                        ));
+                      }
+                      setActiveTool(null);
+                    }
+                  }}
+                />
+                {wire.serviceLoop && (
+                  <Group
+                    x={serviceLoopIndicatorX}
+                    y={serviceLoopIndicatorY}
+                    onClick={() => {
+                      setSelectedItemId(wire.id);
+                      setSelectedItemType('wire');
+                      if (activeTool === 'serviceLoop') {
+                        const lengthInput = prompt('Enter service loop length in mm (or type \'default\'):');
+                        if (lengthInput !== null) {
+                          const newLength: number | 'default' = lengthInput.toLowerCase() === 'default' ? 'default' : Number(lengthInput);
+                          setWires(prevWires => prevWires.map(
+                            w => w.id === wire.id ? { ...w, serviceLoop: { length: newLength } } : w
+                          ));
+                        }
+                        setActiveTool(null);
+                      }
+                    }}
+                  >
+                    <Line
+                      points={[-5, 0, 0, -10, 5, 0]} // Simple U-shape for a loop
+                      stroke={wire.serviceLoop.length === 'default' ? '#87CEEB' : '#191970'}
+                      strokeWidth={2}
+                      lineCap="round"
+                      lineJoin="round"
+                      dash={wire.serviceLoop.length === 'default' ? [4, 2] : []}
+                    />
+                    <Text text="S" fontSize={14} fill="black" x={-5} y={-7} />
+                  </Group>
+                )}
+                {wire.twist && (
+                  <Group
+                    x={midX}
+                    y={midY}
+                    onClick={() => {
+                      setSelectedItemId(wire.id);
+                      setSelectedItemType('wire');
+                      if (activeTool === 'concentricTwist') {
+                        const pitchInput = prompt('Enter concentric twist pitch in mm (or type \'default\'):');
+                        if (pitchInput !== null) {
+                          const newPitch: number | 'default' = pitchInput.toLowerCase() === 'default' ? 'default' : Number(pitchInput);
+                          setWires(prevWires => prevWires.map(w =>
+                            w.id === wire.id ? { ...w, twist: { type: 'concentric', pitch: newPitch } } : w
+                          ));
+                        }
+                        setActiveTool(null);
+                      }
+                    }}
+                  >
+                    <Line
+                      points={[-7, -7, 7, 7]} // Diagonal line for twist
+                      stroke={wire.twist.pitch === 'default' ? '#BA55D3' : '#4B0082'}
+                      strokeWidth={2}
+                      dash={wire.twist.pitch === 'default' ? [4, 2] : []}
+                    />
+                    <Line
+                      points={[-7, 7, 7, -7]} // Another diagonal line for twist
+                      stroke={wire.twist.pitch === 'default' ? '#BA55D3' : '#4B0082'}
+                      strokeWidth={2}
+                      dash={wire.twist.pitch === 'default' ? [4, 2] : []}
+                    />
+                    <Text text="T" fontSize={14} fill="black" x={-5} y={-7} />
+                  </Group>
+                )}
+              </React.Fragment>
             );
           })}
         </Layer>
+        {tooltip && (
+          <Layer>
+            <Rect
+              x={tooltip.x + 10}
+              y={tooltip.y + 10}
+              width={150}
+              height={80}
+              fill="black"
+              opacity={0.75}
+              cornerRadius={5}
+            />
+            <Text
+              x={tooltip.x + 15}
+              y={tooltip.y + 15}
+              text={tooltip.text}
+              fontSize={12}
+              fill="white"
+            />
+          </Layer>
+        )}
       </Stage>
     </div>
   );
