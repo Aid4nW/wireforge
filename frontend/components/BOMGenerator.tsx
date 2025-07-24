@@ -1,20 +1,5 @@
 import { generateBOMCsv } from '../utils/bomGenerator';
-
-interface Component {
-  id: string;
-  type: string;
-  x: number;
-  y: number;
-  pins: any[]; // Simplified for now
-}
-
-interface Wire {
-  id: string;
-  startComponentId: string;
-  startPinId: string;
-  endComponentId: string;
-  endPinId: string;
-}
+import { Component, Wire } from '../utils/types';
 
 export const useBOMGenerator = (components: Component[], wires: Wire[]) => {
   const downloadBOM = () => {

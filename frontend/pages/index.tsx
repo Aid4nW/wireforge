@@ -1,27 +1,7 @@
 import React from 'react';
 import HarnessCanvas from '../components/HarnessCanvas';
 
-interface Pin {
-  id: string;
-  xOffset: number;
-  yOffset: number;
-}
-
-interface Component {
-  id: string;
-  type: string;
-  x: number;
-  y: number;
-  pins: Pin[];
-}
-
-interface Wire {
-  id: string;
-  startComponentId: string;
-  startPinId: string;
-  endComponentId: string;
-  endPinId: string;
-}
+import { Component, Wire, Pin } from '../utils/types';
 
 // Define props type
 type HomeProps = {

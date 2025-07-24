@@ -21,27 +21,7 @@ declare global {
   }
 }
 
-interface Pin {
-  id: string;
-  xOffset: number;
-  yOffset: number;
-}
-
-interface Component {
-  id: string;
-  type: string;
-  x: number;
-  y: number;
-  pins: Pin[];
-}
-
-interface Wire {
-  id: string;
-  startComponentId: string;
-  startPinId: string;
-  endComponentId: string;
-  endPinId: string;
-}
+import { Pin, Component, Wire } from '../utils/types';
 
 interface HarnessCanvasProps {
   components: Component[];

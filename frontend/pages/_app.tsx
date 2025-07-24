@@ -7,28 +7,7 @@ import { loadDesignFromLocalStorage, saveDesignToLocalStorage } from '../utils/l
 import { useBOMGenerator } from '../components/BOMGenerator';
 import React from 'react';
 
-// Define Wire and Component types
-type Wire = {
-  id: string;
-  startComponentId: string;
-  startPinId: string;
-  endComponentId: string;
-  endPinId: string;
-};
-
-type Pin = {
-  id: string;
-  xOffset: number;
-  yOffset: number;
-};
-
-type Component = {
-  id: string;
-  type: string;
-  x: number;
-  y: number;
-  pins: Pin[];
-};
+import { Component, Wire, Pin } from '../utils/types';
 
 interface CustomAppProps extends AppProps {
   Component: AppProps['Component'] & {
