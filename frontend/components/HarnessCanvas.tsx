@@ -23,6 +23,7 @@ declare global {
 
 import { Pin, Component, Wire } from '../utils/types';
 import useHarnessSettingsStore from '../store/useHarnessSettingsStore';
+import useCustomComponentStore from '../store/useCustomComponentStore';
 
 interface HarnessCanvasProps {
   components: Component[];
@@ -38,6 +39,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 
 const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires, activeTool, setActiveTool }) => {
   const { globalServiceLoopLength, globalTwistPitch } = useHarnessSettingsStore();
+  const { customComponents } = useCustomComponentStore();
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [selectedItemType, setSelectedItemType] = useState<'component' | 'wire' | null>(null);
   const [drawingWire, setDrawingWire] = useState(false);
@@ -178,9 +180,12 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
     const componentType = e.dataTransfer?.getData('component/type');
     if (!componentType) return;
 
-    // Define pins based on component type (simple example)
     let newPins: Pin[] = [];
-    if (componentType === 'Connector A') {
+    const customComponent = customComponents.find(comp => comp.type === componentType);
+
+    if (customComponent) {
+      newPins = customComponent.pins;
+    } else if (componentType === 'Connector A') {
       newPins = [{ id: 'p1', xOffset: 0, yOffset: 10 }, { id: 'p2', xOffset: 0, yOffset: 20 }];
     } else if (componentType === 'ECU A') {
       newPins = [

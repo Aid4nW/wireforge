@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useCustomComponentStore from '../store/useCustomComponentStore';
 
 const ComponentLibrary: React.FC = () => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const { customComponents, loadComponents } = useCustomComponentStore();
+
+  useEffect(() => {
+    loadComponents();
+  }, [loadComponents]);
 
   const toggleMenu = (menuName: string) => {
     setOpenMenu(openMenu === menuName ? null : menuName);
@@ -50,6 +56,21 @@ const ComponentLibrary: React.FC = () => {
           </ul>
         )}
       </div>
+
+      {customComponents.length > 0 && (
+        <div className="component-category">
+          <button onClick={() => toggleMenu('Custom')}>Custom Components</button>
+          {openMenu === 'Custom' && (
+            <ul>
+              {customComponents.map((comp) => (
+                <li key={comp.id} draggable="true" onDragStart={(e) => e.dataTransfer.setData('component/type', comp.type)}>
+                  {comp.type}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 };

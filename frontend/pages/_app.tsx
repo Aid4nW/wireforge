@@ -7,6 +7,7 @@ import SettingsPanel from '../components/SettingsPanel';
 import { loadDesignFromLocalStorage, saveDesignToLocalStorage } from '../utils/localStorage';
 import { useBOMGenerator } from '../components/BOMGenerator';
 import React from 'react';
+import Link from 'next/link';
 
 import { Component, Wire, Pin } from '../utils/types';
 
@@ -105,6 +106,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
             </div>
             <a href="#">Dashboard</a>
             <a href="#">Projects</a>
+            <Link href="/my-library">My Library</Link>
             <div className="settings-menu">
               <button onClick={() => setSettingsMenuOpen(!isSettingsMenuOpen)} className="settings-menu-button">
                 Settings
