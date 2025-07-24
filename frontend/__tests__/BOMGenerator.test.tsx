@@ -1,3 +1,13 @@
+jest.mock('../store/useHarnessSettingsStore', () => ({
+  __esModule: true,
+  default: {
+    getState: () => ({
+      globalServiceLoopLength: 50, // Mock a default service loop length
+      globalTwistPitch: 10, // Mock a default twist pitch
+    }),
+  },
+}));
+
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useBOMGenerator } from '../components/BOMGenerator';
@@ -29,9 +39,14 @@ describe('BOMGenerator', () => {
       { id: 'c3', type: 'Connector A', x: 0, y: 0, pins: [] },
     ];
     const wires = [
-      { id: 'w1', startComponentId: 'c1', startPinId: 'p1', endComponentId: 'c2', endPinId: 'p1' },
-      { id: 'w2', startComponentId: 'c2', startPinId: 'p1', endComponentId: 'c3', endPinId: 'p1' },
+      { id: 'w1', startComponentId: 'c1', startPinId: 'p1', endComponentId: 'c2', endPinId: 'p1', length: 100, serviceLoop: { length: 'default' }, twist: { type: 'concentric', pitch: 'default' } },
+      { id: 'w2', startComponentId: 'c2', startPinId: 'p1', endComponentId: 'c3', endPinId: 'p1', length: 150, serviceLoop: { length: 'default' }, twist: { type: 'concentric', pitch: 'default' } },
     ];
+
+    // Expected effective lengths:
+    // w1: 100 (base) + 50 (service loop) = 150. Then 150 * 1.05 (twist) = 157.5
+    // w2: 150 (base) + 50 (service loop) = 200. Then 200 * 1.05 (twist) = 210
+    // Total: 157.5 + 210 = 367.5
 
     // Create a dummy component to use the hook
     const TestComponent = () => {
@@ -45,7 +60,7 @@ describe('BOMGenerator', () => {
     await userEvent.click(generateButton); // Await the click event
 
     expect(mockBlob).toHaveBeenCalledWith(
-      ["Component,Quantity\nConnector A,2\nSensor B,1\n\nWire,Quantity\nTotal Wires,2\n"],
+      ["Component,Quantity\nConnector A,2\nSensor B,1\n\nWire,Length (mm)\nWire w1,157.50\nWire w2,210.00\n\nTotal Harness Wire Length,367.50 mm\n"],
       { type: 'text/csv;charset=utf-8;' }
     );
   });

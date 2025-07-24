@@ -22,18 +22,22 @@ declare global {
 }
 
 import { Pin, Component, Wire } from '../utils/types';
+import useHarnessSettingsStore from '../store/useHarnessSettingsStore';
 
 interface HarnessCanvasProps {
   components: Component[];
   setComponents: React.Dispatch<React.SetStateAction<Component[]>>;
   wires: Wire[];
   setWires: React.Dispatch<React.SetStateAction<Wire[]>>;
+  activeTool: string | null;
+  setActiveTool: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 import { Stage, Layer, Rect, Text, Circle, Line, Group } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 
-const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires }) => {
+const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents, wires, setWires, activeTool, setActiveTool }) => {
+  const { globalServiceLoopLength, globalTwistPitch } = useHarnessSettingsStore();
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [selectedItemType, setSelectedItemType] = useState<'component' | 'wire' | null>(null);
   const [drawingWire, setDrawingWire] = useState(false);
@@ -90,6 +94,9 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
         startPinId: startPin.pinId,
         endComponentId: componentId,
         endPinId: pin.id,
+        length: 100, // Default length for a new wire (e.g., 100mm)
+        serviceLoop: { length: 'default' },
+        twist: { type: 'concentric', pitch: 'default' },
       };
       setWires((prevWires) => [...prevWires, newWire]);
       setDrawingWire(false);
@@ -329,6 +336,25 @@ const HarnessCanvas: React.FC<HarnessCanvasProps> = ({ components, setComponents
                 onClick={() => {
                   setSelectedItemId(wire.id);
                   setSelectedItemType('wire');
+                  if (activeTool === 'serviceLoop') {
+                    const lengthInput = prompt('Enter service loop length in mm (or type \'default\'):');
+                    if (lengthInput !== null) {
+                      const newLength: number | 'default' = lengthInput.toLowerCase() === 'default' ? 'default' : Number(lengthInput);
+                      setWires(prevWires => prevWires.map(w =>
+                        w.id === wire.id ? { ...w, serviceLoop: { length: newLength } } : w
+                      ));
+                    }
+                    setActiveTool(null);
+                  } else if (activeTool === 'concentricTwist') {
+                    const pitchInput = prompt('Enter concentric twist pitch in mm (or type \'default\'):');
+                    if (pitchInput !== null) {
+                      const newPitch: number | 'default' = pitchInput.toLowerCase() === 'default' ? 'default' : Number(pitchInput);
+                      setWires(prevWires => prevWires.map(w =>
+                        w.id === wire.id ? { ...w, twist: { type: 'concentric', pitch: newPitch } } : w
+                      ));
+                    }
+                    setActiveTool(null);
+                  }
                 }}
               />
             );

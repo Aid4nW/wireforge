@@ -3,6 +3,7 @@ import '../styles/globals.css'
 import { useState, useEffect } from 'react'
 import DarkModeToggle from '../components/DarkModeToggle'
 import ComponentLibrary from '../components/ComponentLibrary'
+import SettingsPanel from '../components/SettingsPanel';
 import { loadDesignFromLocalStorage, saveDesignToLocalStorage } from '../utils/localStorage';
 import { useBOMGenerator } from '../components/BOMGenerator';
 import React from 'react';
@@ -127,6 +128,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
                 <li><a href="#">Text Tool</a></li>
                 <li><a href="#">Measure Tool</a></li>
             </ul>
+            <SettingsPanel />
         </aside>
         <main>
             <Component {...pageProps} components={components} setComponents={setComponents} wires={wires} setWires={setWires} />

@@ -352,6 +352,62 @@ footer {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.settings-panel {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid var(--aside-border-light);
+    border-radius: 8px;
+    background-color: var(--aside-bg-light);
+    box-shadow: 0 2px 4px var(--aside-shadow-light);
+}
+
+.settings-panel h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 19px;
+    color: var(--aside-h3-color-light);
+}
+
+.settings-panel div {
+    margin-bottom: 10px;
+}
+
+.settings-panel label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--aside-link-color-light);
+}
+
+.settings-panel input[type="number"] {
+    width: calc(100% - 12px); /* Account for padding */
+    padding: 8px;
+    border: 1px solid var(--aside-border-light);
+    border-radius: 4px;
+    background-color: var(--main-bg-light);
+    color: var(--text-color-light);
+}
+
+body.dark-mode .settings-panel {
+    border-color: var(--aside-border-dark);
+    background-color: var(--aside-bg-dark);
+    box-shadow: 0 2px 4px var(--aside-shadow-dark);
+}
+
+body.dark-mode .settings-panel h3 {
+    color: var(--aside-h3-color-dark);
+}
+
+body.dark-mode .settings-panel label {
+    color: var(--aside-link-color-dark);
+}
+
+body.dark-mode .settings-panel input[type="number"] {
+    background-color: var(--main-bg-dark);
+    border-color: var(--aside-border-dark);
+    color: var(--text-color-dark);
+}
+
 /* File Menu */
 .file-menu {
     position: relative;

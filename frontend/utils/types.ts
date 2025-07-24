@@ -20,12 +20,13 @@ export interface Wire {
   startPinId: string;
   endComponentId: string;
   endPinId: string;
+  length: number; // Base length of the wire
   serviceLoop?: {
-    length: number;
+    length: number | 'default';
   };
   twist?: {
     type: 'concentric';
-    pitch: number;
+    pitch: number | 'default';
   };
   customProperties?: Record<string, string | number>;
 }
