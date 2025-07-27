@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
     right: 30,
   },
   table: {
-    display: 'table',
+    display: 'flex',
+    flexDirection: 'column',
     width: 'auto',
     marginBottom: 10,
   },

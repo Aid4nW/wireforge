@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Component, Wire } from '../utils/types';
 
 interface ExportOptionsModalProps {
   isOpen: boolean;
