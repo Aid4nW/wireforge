@@ -2,6 +2,8 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Stage, Layer, Rect, Text, Group, Circle, Line } from 'react-konva';
+import ComponentConfigModal from './ComponentConfigModal';
+import PropertiesPanel from './PropertiesPanel';
 import Konva from 'konva';
 import Grid from './Grid';
 import { useSelectionStore } from '@/store/useSelectionStore';
@@ -12,20 +14,39 @@ interface Port {
   y: number; // relative to component's origin
 }
 
+interface Pin {
+  id: string;
+  name: string; // e.g., "Pin 1", "Pin A"
+}
+
+interface Connector {
+  id: string;
+  name: string; // e.g., "Connector A", "Main Connector"
+  pins: Pin[];
+}
+
 interface Component {
   id: string; // Add unique ID
   x: number;
   y: number;
   name: string;
   ports: Port[];
+  connectors: Connector[]; // New: for detailed pinout
 }
 
 interface Wire {
   id: string;
   startComponentId: string;
-  startPortId: string;
+  startConnectionPointId: string;
   endComponentId: string;
-  endPortId: string;
+  endConnectionPointId: string;
+}
+
+interface ConnectorConfig {
+  id: number; // Unique ID for key prop in React list rendering
+  name: string;
+  pinCount: number;
+  startLetter: string;
 }
 
 const HarnessCanvas = () => {
@@ -37,15 +58,18 @@ const HarnessCanvas = () => {
     x: 0,
     y: 0,
   });
-  const [components, setComponents] = useState<Component[]>([]);
   const [wires, setWires] = useState<Wire[]>([]);
   const [drawingWire, setDrawingWire] = useState<{
     startComponent: Component;
-    startPort: Port;
+    startConnectionPoint: Pin; // Changed from Port | Pin
     points: number[]; // [x1, y1, x2, y2] for the temporary line
   } | null>(null);
-  const { selectedComponent, setSelectedComponent } = useSelectionStore();
+  const { selectedComponent, setSelectedComponent, components, setComponents, updateComponentProperties } = useSelectionStore();
   const [isStageDraggable, setIsStageDraggable] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState<{ x: number; y: number } | null>(null);
+  const [editingComponentId, setEditingComponentId] = useState<string | null>(null);
+  const [clickToConnectStartPin, setClickToConnectStartPin] = useState<Pin | null>(null);
   const gridSize = 20;
 
   useEffect(() => {
@@ -62,6 +86,18 @@ const HarnessCanvas = () => {
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
+
+  useEffect(() => {
+    console.log('Wires array changed:', wires);
+    if (stageRef.current) {
+      console.log('Stage properties on wires change:', {
+        x: stageRef.current.x(),
+        y: stageRef.current.y(),
+        scaleX: stageRef.current.scaleX(),
+        scaleY: stageRef.current.scaleY(),
+      });
+    }
+  }, [wires, stage.x, stage.y, stage.scale]); // Add stage dependencies
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
@@ -95,44 +131,130 @@ const HarnessCanvas = () => {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    const name = e.dataTransfer.getData('text/plain');
     
+
     if (stageRef.current) {
         const stage = stageRef.current;
         stage.setPointersPositions(e.nativeEvent);
         const pos = stage.getPointerPosition();
         if (pos) {
-            const newComponent: Component = {
-                id: `comp-${Date.now()}`, // Generate unique ID
-                x: (pos.x - stage.x()) / stage.scaleX(),
-                y: (pos.y - stage.y()) / stage.scaleY(),
-                name,
-                ports: [
-                    { id: 'left', x: 0, y: 25 }, // Assuming component is 100x50
-                    { id: 'right', x: 100, y: 25 },
-                ],
-            };
-            setComponents([
-                ...components,
-                newComponent,
-            ]);
-            setSelectedComponent(newComponent); // Select the newly dropped component
+            setModalPosition(pos);
+            setIsModalOpen(true);
         }
     }
   };
 
-  const getAbsolutePortPosition = (component: Component, port: Port) => {
+  const handleModalSubmit = (name: string, connectorsConfig: ConnectorConfig[]) => {
+    if (modalPosition && stageRef.current) {
+      const stage = stageRef.current;
+      const pos = modalPosition;
+
+      const connectors: Connector[] = [];
+
+      connectorsConfig.forEach((config) => {
+        const pins: Pin[] = [];
+        const startCharCode = config.startLetter.toUpperCase().charCodeAt(0);
+        for (let i = 0; i < config.pinCount; i++) {
+          const pinName = `${String.fromCharCode(startCharCode)}${i + 1}`;
+          pins.push({
+            id: `pin-${Date.now()}-${config.name}-${pinName}`,
+            name: pinName,
+          });
+        }
+        connectors.push({
+          id: `conn-${Date.now()}-${config.name}`,
+          name: config.name,
+          pins: pins,
+        });
+      });
+
+      if (editingComponentId) {
+        // Editing existing component
+        setComponents(prevComponents => {
+          const updatedComponents = prevComponents.map(comp =>
+            comp.id === editingComponentId
+              ? { ...comp, name, connectors }
+              : comp
+          );
+          const newlyUpdatedComponent = updatedComponents.find(comp => comp.id === editingComponentId);
+          setSelectedComponent(newlyUpdatedComponent || null);
+          return updatedComponents;
+        });
+      } else {
+        // Creating new component
+        const newComponent: Component = {
+            id: `comp-${Date.now()}`, // Generate unique ID
+            x: (pos.x - stage.x()) / stage.scaleX(),
+            y: (pos.y - stage.y()) / stage.scaleY(),
+            name,
+            ports: [], // No default ports, pins will be connection points
+            connectors: connectors,
+        };
+        setComponents([
+            ...components,
+            newComponent,
+        ]);
+        setSelectedComponent(newComponent); // Select the newly dropped component
+      }
+    }
+    setIsModalOpen(false);
+    setModalPosition(null);
+    setEditingComponentId(null); // Reset editing state
+  };
+
+  const getAbsoluteConnectionPointPosition = (component: Component, connectionPoint: Pin) => {
     const stage = stageRef.current;
     if (!stage) return { x: 0, y: 0 };
 
-    const componentAbsoluteX = component.x * stage.scaleX() + stage.x();
-    const componentAbsoluteY = component.y * stage.scaleY() + stage.y();
+    const { height: compHeight } = getComponentDimensions(component);
+    let cpX = 0;
+    let cpY = 0;
 
-    const portAbsoluteX = componentAbsoluteX + port.x * stage.scaleX();
-    const portAbsoluteY = componentAbsoluteY + port.y * stage.scaleY();
+    let currentConnectorOffsetX = 0;
+    for (const connector of component.connectors) {
+      for (let i = 0; i < connector.pins.length; i++) {
+        if (connector.pins[i].id === connectionPoint.id) {
+          cpX = currentConnectorOffsetX + COMPONENT_PADDING / 2 + i * PIN_SPACING;
+          cpY = compHeight - PIN_RADIUS;
+          break;
+        }
+      }
+      currentConnectorOffsetX += (connector.pins.length * PIN_SPACING) + COMPONENT_PADDING;
+    }
 
-    return { x: portAbsoluteX, y: portAbsoluteY };
+    // Calculate the pin's position relative to the stage's origin, considering scale and translation
+    const absoluteX = (component.x + cpX) * stage.scaleX() + stage.x();
+    const absoluteY = (component.y + cpY) * stage.scaleY() + stage.y();
+
+    return { x: absoluteX, y: absoluteY };
   };
+
+  const PIN_RADIUS = 4;
+  const PIN_SPACING = 15;
+  const COMPONENT_MIN_WIDTH = 100;
+  const COMPONENT_HEIGHT = 50;
+  const COMPONENT_PADDING = 20;
+
+  const getComponentDimensions = (component: Component) => {
+    const numPins = component.connectors.reduce((acc, conn) => acc + conn.pins.length, 0);
+    const calculatedWidth = Math.max(COMPONENT_MIN_WIDTH, numPins * PIN_SPACING + COMPONENT_PADDING);
+    const calculatedHeight = COMPONENT_HEIGHT; // For now, fixed height
+    return { width: calculatedWidth, height: calculatedHeight };
+  };
+
+  // Prepare initial values for the modal
+  const initialModalName = editingComponentId
+    ? components.find(comp => comp.id === editingComponentId)?.name
+    : '';
+
+  const initialModalConnectorsConfig = editingComponentId
+    ? components.find(comp => comp.id === editingComponentId)?.connectors.map((conn, index) => ({
+        id: index, // Use index as a stable ID for modal's internal use
+        name: conn.name,
+        pinCount: conn.pins.length,
+        startLetter: conn.pins[0] ? conn.pins[0].name.charAt(0) : 'A', // Assuming pin names are like A1, B2
+      }))
+    : [];
 
   return (
     <div
@@ -153,36 +275,63 @@ const HarnessCanvas = () => {
           y={stage.y}
           draggable={isStageDraggable}
           onDragEnd={(e) => {
-            setStage({
-              ...stage,
-              x: e.target.x(),
-              y: e.target.y(),
-            });
+            e.cancelBubble = true;
+            setIsStageDraggable(true);
           }}
           onMouseMove={(e) => {
-            if (drawingWire && stageRef.current) {
-              const pointerPosition = stageRef.current.getPointerPosition();
-              if (pointerPosition) {
-                setDrawingWire((prev) => {
+            // Handle temporary wire drawing for both drag-and-drop and click-to-connect
+            if (drawingWire || clickToConnectStartPin) { // Check both states
+              const stage = e.target.getStage();
+              if (!stage) return;
+              const pointer = stage.getPointerPosition();
+              if (!pointer) return;
+
+              // If click-to-connect is active, create a temporary drawingWire
+              if (clickToConnectStartPin && !drawingWire) {
+                const startComponent = components.find(c => c.connectors.some(conn => conn.pins.some(p => p.id === clickToConnectStartPin.id)));
+                if (!startComponent) return;
+                const startAbsPos = getAbsoluteConnectionPointPosition(startComponent, clickToConnectStartPin);
+                setDrawingWire({
+                  startComponent: startComponent,
+                  startConnectionPoint: clickToConnectStartPin,
+                  points: [startAbsPos.x, startAbsPos.y, pointer.x, pointer.y],
+                });
+              } else if (drawingWire) { // Existing drawingWire (from drag-and-drop or click-to-connect)
+                setDrawingWire(prev => {
                   if (!prev) return null;
                   const newPoints = [...prev.points];
-                  newPoints[2] = pointerPosition.x;
-                  newPoints[3] = pointerPosition.y;
+                  newPoints[2] = pointer.x;
+                  newPoints[3] = pointer.y;
                   return { ...prev, points: newPoints };
                 });
               }
+            }
+          }}
+          onMouseUp={(e) => {
+            // If drawingWire is active and mouse is released on stage (not a pin), cancel
+            // This handles cancellation for both drag-and-drop and click-to-connect
+            if (drawingWire) {
+              setDrawingWire(null);
+              setClickToConnectStartPin(null); // Also reset click-to-connect state
+              setIsStageDraggable(true); // Re-enable stage drag
             }
           }}
           onClick={(e) => {
             // if we are clicking on an empty place, deselect all
             if (e.target === e.target.getStage()) {
               setSelectedComponent(null);
+              // If click-to-connect is active and clicked on empty space, cancel
+              if (clickToConnectStartPin) {
+                setClickToConnectStartPin(null);
+                setDrawingWire(null); // Clear temporary wire
+                setIsStageDraggable(true); // Re-enable stage drag
+              }
             }
           }}
         >
           <Layer>
             <Grid width={dimensions.width * 2} height={dimensions.height * 2} gridSize={gridSize} />
-            {components.map((comp, i) => (
+            {components.map((comp) => (
               <Group
                 key={comp.id} // Use component ID as key
                 x={comp.x}
@@ -192,76 +341,121 @@ const HarnessCanvas = () => {
                 onDragEnd={(e) => {
                   e.cancelBubble = true;
                   setIsStageDraggable(true);
-                  const newComponents = [...components];
-                  newComponents[i] = {
-                    ...newComponents[i],
-                    x: e.target.x(),
-                    y: e.target.y(),
-                  };
-                  setComponents(newComponents);
-                  setSelectedComponent(newComponents[i]); // Select the moved component
+                  updateComponentProperties(comp.id, { x: e.target.x(), y: e.target.y() }); // Use updateComponentProperties
+                  setSelectedComponent({ ...comp, x: e.target.x(), y: e.target.y() }); // Update selected component
                 }}
                 onClick={() => {
                   setSelectedComponent(comp); // Select the clicked component
                 }}
+                onDblClick={() => { // Add double click handler for editing
+                  setEditingComponentId(comp.id);
+                  setIsModalOpen(true);
+                }}
               >
-                <Rect
-                  width={100}
-                  height={50}
-                  fill="lightblue"
-                  stroke={selectedComponent === comp ? 'red' : 'black'}
-                  strokeWidth={selectedComponent === comp ? 2 : 1}
-                />
-                <Text
-                  text={comp.name}
-                  fontSize={16}
-                  fontFamily="Calibri"
-                  fill="black"
-                  width={100}
-                  height={50}
-                  align="center"
-                  verticalAlign="middle"
-                />
-                {comp.ports.map((port) => (
-                  <Circle
-                    key={port.id}
-                    x={port.x}
-                    y={port.y}
-                    radius={5}
-                    fill="green"
-                    stroke="black"
-                    strokeWidth={1}
-                    onClick={(e) => {
-                      e.cancelBubble = true; // Prevent click from propagating to component or stage
-                      if (!drawingWire) {
-                        // Start drawing a wire
-                        const absolutePos = getAbsolutePortPosition(comp, port);
-                        setDrawingWire({
-                          startComponent: comp,
-                          startPort: port,
-                          points: [absolutePos.x, absolutePos.y, absolutePos.x, absolutePos.y],
-                        });
-                      } else {
-                        // Finish drawing a wire
-                        if (drawingWire.startComponent.id === comp.id && drawingWire.startPort.id === port.id) {
-                          // Clicked the same port, cancel drawing
-                          setDrawingWire(null);
-                          return;
-                        }
+                {/* Calculate dimensions */}
+                {(() => {
+                  const dimensions = getComponentDimensions(comp);
+                  return (
+                    <>
+                      <Rect
+                        width={dimensions.width}
+                        height={dimensions.height}
+                        fill="lightblue"
+                        stroke={selectedComponent === comp ? 'red' : 'black'}
+                        strokeWidth={selectedComponent === comp ? 2 : 1}
+                      />
+                      <Text
+                        text={comp.name}
+                        fontSize={16}
+                        fontFamily="Calibri"
+                        fill="black"
+                        width={dimensions.width}
+                        height={dimensions.height}
+                        align="center"
+                        verticalAlign="middle"
+                      />
+                      {/* Render Pins */}
+                      {(() => {
+                        let currentConnectorOffsetX = 0;
+                        return comp.connectors.map((connector) => {
+                          const connectorPins = connector.pins.map((pin, pinIndex) => {
+                            const pinX = currentConnectorOffsetX + COMPONENT_PADDING / 2 + pinIndex * PIN_SPACING;
+                            const pinY = dimensions.height - PIN_RADIUS; // On the bottom edge
+                            return (
+                              <Circle
+                                key={pin.id}
+                                x={pinX}
+                                y={pinY}
+                                radius={PIN_RADIUS}
+                                fill="purple"
+                                stroke="black"
+                                strokeWidth={1}
+                                onMouseDown={(e) => {
+                                  e.cancelBubble = true; // Prevent stage drag
+                                  setIsStageDraggable(false); // Disable stage drag during wiring
 
-                        const newWire: Wire = {
-                          id: `wire-${Date.now()}`,
-                          startComponentId: drawingWire.startComponent.id,
-                          startPortId: drawingWire.startPort.id,
-                          endComponentId: comp.id,
-                          endPortId: port.id,
-                        };
-                        setWires((prevWires) => [...prevWires, newWire]);
-                        setDrawingWire(null); // Reset drawing state
-                      }
-                    }}
-                  />
-                ))}
+                                  if (clickToConnectStartPin) {
+                                    // If the clicked pin is the same as the start pin, cancel the operation
+                                    if (clickToConnectStartPin.id === pin.id) {
+                                      setClickToConnectStartPin(null);
+                                      setDrawingWire(null);
+                                      setIsStageDraggable(true);
+                                      return;
+                                    }
+
+                                    // This is the second click, attempt to complete a wire
+                                    const startPin = clickToConnectStartPin;
+                                    const endPin = pin;
+                                    const startComponent = components.find(c => c.connectors.some(conn => conn.pins.some(p => p.id === startPin.id)));
+                                    const endComponent = comp;
+
+                                    if (startComponent && endComponent && (startPin.id !== endPin.id || startComponent.id !== endComponent.id)) {
+                                      const newWire: Wire = {
+                                        id: `wire-${Date.now()}`,
+                                        startComponentId: startComponent.id,
+                                        startConnectionPointId: startPin.id,
+                                        endComponentId: endComponent.id,
+                                        endConnectionPointId: endPin.id,
+                                      };
+                                      setWires(prevWires => [...prevWires, newWire]);
+                                    }
+                                    setClickToConnectStartPin(null); // Reset click-to-connect state
+                                    setDrawingWire(null); // Clear temporary wire
+                                    setIsStageDraggable(true); // Re-enable stage drag
+                                  } else {
+                                    // This is the first click, or initiating a drag-and-drop wire
+                                    // Set the click-to-connect start pin
+                                    setClickToConnectStartPin(pin);
+
+                                    // Also start drawing a temporary wire for visual feedback
+                                    const startAbsPos = getAbsoluteConnectionPointPosition(comp, pin);
+                                    setDrawingWire({
+                                      startComponent: comp,
+                                      startConnectionPoint: pin,
+                                      points: [startAbsPos.x, startAbsPos.y, startAbsPos.x, startAbsPos.y],
+                                    });
+                                  }
+                                }}
+                                onMouseUp={(e) => {
+                                  e.cancelBubble = true; // Prevent stage drag
+                                  // The drag-and-drop completion logic is handled here
+                                  // No change needed for drag-and-drop completion
+                                  setIsStageDraggable(true); // Re-enable stage drag
+                                  if (drawingWire && drawingWire.startComponent.id === comp.id && drawingWire.startConnectionPoint.id === pin.id) {
+                                    // This is a click on the same pin that started the drag, so cancel the drag
+                                    setDrawingWire(null);
+                                  }
+                                }}
+                              />
+                            );
+                          });
+                          currentConnectorOffsetX += (connector.pins.length * PIN_SPACING) + COMPONENT_PADDING; // Advance offset for next connector
+                          return <React.Fragment key={connector.id}>{connectorPins}</React.Fragment>;
+                        });
+                      })()}
+                    </>
+                  );
+                })()}
               </Group>
             ))}
             {wires.map((wire) => {
@@ -270,13 +464,24 @@ const HarnessCanvas = () => {
 
               if (!startComponent || !endComponent) return null;
 
-              const startPort = startComponent.ports.find(p => p.id === wire.startPortId);
-              const endPort = endComponent.ports.find(p => p.id === wire.endPortId);
+              // Find the start pin
+              let startPin: Pin | undefined;
+              for (const connector of startComponent.connectors) {
+                startPin = connector.pins.find(p => p.id === wire.startConnectionPointId);
+                if (startPin) break;
+              }
 
-              if (!startPort || !endPort) return null;
+              // Find the end pin
+              let endPin: Pin | undefined;
+              for (const connector of endComponent.connectors) {
+                endPin = connector.pins.find(p => p.id === wire.endConnectionPointId);
+                if (endPin) break;
+              }
 
-              const startAbsPos = getAbsolutePortPosition(startComponent, startPort);
-              const endAbsPos = getAbsolutePortPosition(endComponent, endPort);
+              if (!startPin || !endPin) return null;
+
+              const startAbsPos = getAbsoluteConnectionPointPosition(startComponent, startPin);
+              const endAbsPos = getAbsoluteConnectionPointPosition(endComponent, endPin);
 
               return (
                 <Line
@@ -298,6 +503,17 @@ const HarnessCanvas = () => {
           </Layer>
         </Stage>
       )}
+      <ComponentConfigModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingComponentId(null); // Reset editing state on close
+        }}
+        onSubmit={handleModalSubmit}
+        initialName={initialModalName}
+        initialConnectorsConfig={initialModalConnectorsConfig}
+      />
+      <PropertiesPanel />
     </div>
   );
 };

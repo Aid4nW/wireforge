@@ -1,8 +1,7 @@
 import React from 'react';
 import ComponentLibrary from './ComponentLibrary';
-import PropertiesPanel from './PropertiesPanel';
 
-export const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children, rightSidebarContent }: { children: React.ReactNode, rightSidebarContent?: React.ReactNode }) => {
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {/* Left Sidebar for Component Library */}
@@ -17,7 +16,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Right Sidebar for Properties Panel */}
       <aside className="w-64 bg-white dark:bg-gray-800 p-4 shadow-md">
-        <PropertiesPanel />
+        {rightSidebarContent}
       </aside>
     </div>
   );
