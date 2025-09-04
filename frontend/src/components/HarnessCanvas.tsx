@@ -198,20 +198,35 @@ const HarnessCanvas = () => {
     const stage = stageRef.current;
     if (!stage) return { x: 0, y: 0 };
 
-    const { height: compHeight } = getComponentDimensions(component);
+    const dimensions = getComponentDimensions(component);
+    const { height: compHeight } = dimensions;
     let cpX = 0;
     let cpY = 0;
 
-    let currentConnectorOffsetX = 0;
+    const numConnectors = component.connectors.length;
+    if (numConnectors === 0) return { x: 0, y: 0 };
+
+    const totalPins = component.connectors.reduce((acc, conn) => acc + conn.pins.length, 0);
+    if (totalPins === 0) return { x: 0, y: 0 };
+
+    const availableWidth = dimensions.width - (numConnectors + 1) * COMPONENT_PADDING;
+    const pinSpacing = availableWidth / totalPins;
+
+    let currentX = COMPONENT_PADDING;
+    let found = false;
+
     for (const connector of component.connectors) {
-      for (let i = 0; i < connector.pins.length; i++) {
-        if (connector.pins[i].id === connectionPoint.id) {
-          cpX = currentConnectorOffsetX + COMPONENT_PADDING / 2 + i * 25;
+      for (const pin of connector.pins) {
+        if (pin.id === connectionPoint.id) {
+          cpX = currentX;
           cpY = compHeight - PIN_RADIUS;
+          found = true;
           break;
         }
+        currentX += pinSpacing;
       }
-      currentConnectorOffsetX += (connector.pins.length * 25) + COMPONENT_PADDING;
+      if (found) break;
+      currentX += COMPONENT_PADDING;
     }
 
     // Calculate the pin's position relative to the stage's origin, considering scale and translation
