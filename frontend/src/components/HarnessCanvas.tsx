@@ -52,6 +52,7 @@ interface ConnectorConfig {
 const HarnessCanvas = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
+  const componentGroupRefs = useRef(new Map<string, Konva.Group>());
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [stage, setStage] = useState({
     scale: 1,
@@ -88,14 +89,7 @@ const HarnessCanvas = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Wires array changed:', wires);
     if (stageRef.current) {
-      console.log('Stage properties on wires change:', {
-        x: stageRef.current.x(),
-        y: stageRef.current.y(),
-        scaleX: stageRef.current.scaleX(),
-        scaleY: stageRef.current.scaleY(),
-      });
     }
   }, [wires, stage.x, stage.y, stage.scale]); // Add stage dependencies
 
@@ -170,16 +164,14 @@ const HarnessCanvas = () => {
 
       if (editingComponentId) {
         // Editing existing component
-        setComponents(prevComponents => {
-          const updatedComponents = prevComponents.map(comp =>
-            comp.id === editingComponentId
-              ? { ...comp, name, connectors }
-              : comp
-          );
-          const newlyUpdatedComponent = updatedComponents.find(comp => comp.id === editingComponentId);
-          setSelectedComponent(newlyUpdatedComponent || null);
-          return updatedComponents;
-        });
+        const updatedComponents = components.map(comp =>
+          comp.id === editingComponentId
+            ? { ...comp, name, connectors }
+            : comp
+        );
+        setComponents(updatedComponents);
+        const newlyUpdatedComponent = updatedComponents.find(comp => comp.id === editingComponentId);
+        setSelectedComponent(newlyUpdatedComponent || null);
       } else {
         // Creating new component
         const newComponent: Component = {
@@ -214,12 +206,12 @@ const HarnessCanvas = () => {
     for (const connector of component.connectors) {
       for (let i = 0; i < connector.pins.length; i++) {
         if (connector.pins[i].id === connectionPoint.id) {
-          cpX = currentConnectorOffsetX + COMPONENT_PADDING / 2 + i * PIN_SPACING;
+          cpX = currentConnectorOffsetX + COMPONENT_PADDING / 2 + i * 25;
           cpY = compHeight - PIN_RADIUS;
           break;
         }
       }
-      currentConnectorOffsetX += (connector.pins.length * PIN_SPACING) + COMPONENT_PADDING;
+      currentConnectorOffsetX += (connector.pins.length * 25) + COMPONENT_PADDING;
     }
 
     // Calculate the pin's position relative to the stage's origin, considering scale and translation
@@ -230,14 +222,13 @@ const HarnessCanvas = () => {
   };
 
   const PIN_RADIUS = 4;
-  const PIN_SPACING = 15;
-  const COMPONENT_MIN_WIDTH = 100;
+  const COMPONENT_MIN_WIDTH = 20;
   const COMPONENT_HEIGHT = 50;
   const COMPONENT_PADDING = 20;
 
   const getComponentDimensions = (component: Component) => {
     const numPins = component.connectors.reduce((acc, conn) => acc + conn.pins.length, 0);
-    const calculatedWidth = Math.max(COMPONENT_MIN_WIDTH, numPins * PIN_SPACING + COMPONENT_PADDING);
+    const calculatedWidth = Math.max(COMPONENT_MIN_WIDTH, numPins * 25 + COMPONENT_PADDING);
     const calculatedHeight = COMPONENT_HEIGHT; // For now, fixed height
     return { width: calculatedWidth, height: calculatedHeight };
   };
@@ -331,133 +322,144 @@ const HarnessCanvas = () => {
         >
           <Layer>
             <Grid width={dimensions.width * 2} height={dimensions.height * 2} gridSize={gridSize} />
-            {components.map((comp) => (
-              <Group
-                key={comp.id} // Use component ID as key
-                x={comp.x}
-                y={comp.y}
-                draggable
-                onDragStart={() => setIsStageDraggable(false)}
-                onDragEnd={(e) => {
-                  e.cancelBubble = true;
-                  setIsStageDraggable(true);
-                  updateComponentProperties(comp.id, { x: e.target.x(), y: e.target.y() }); // Use updateComponentProperties
-                  setSelectedComponent({ ...comp, x: e.target.x(), y: e.target.y() }); // Update selected component
-                }}
-                onClick={() => {
-                  setSelectedComponent(comp); // Select the clicked component
-                }}
-                onDblClick={() => { // Add double click handler for editing
-                  setEditingComponentId(comp.id);
-                  setIsModalOpen(true);
-                }}
-              >
-                {/* Calculate dimensions */}
-                {(() => {
-                  const dimensions = getComponentDimensions(comp);
-                  return (
-                    <>
-                      <Rect
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        fill="lightblue"
-                        stroke={selectedComponent === comp ? 'red' : 'black'}
-                        strokeWidth={selectedComponent === comp ? 2 : 1}
-                      />
-                      <Text
-                        text={comp.name}
-                        fontSize={16}
-                        fontFamily="Calibri"
-                        fill="black"
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        align="center"
-                        verticalAlign="middle"
-                      />
-                      {/* Render Pins */}
-                      {(() => {
-                        let currentConnectorOffsetX = 0;
-                        return comp.connectors.map((connector) => {
-                          const connectorPins = connector.pins.map((pin, pinIndex) => {
-                            const pinX = currentConnectorOffsetX + COMPONENT_PADDING / 2 + pinIndex * PIN_SPACING;
-                            const pinY = dimensions.height - PIN_RADIUS; // On the bottom edge
-                            return (
-                              <Circle
-                                key={pin.id}
-                                x={pinX}
-                                y={pinY}
-                                radius={PIN_RADIUS}
-                                fill="purple"
-                                stroke="black"
-                                strokeWidth={1}
-                                onMouseDown={(e) => {
-                                  e.cancelBubble = true; // Prevent stage drag
-                                  setIsStageDraggable(false); // Disable stage drag during wiring
+            {components.map((comp) => {
+              const dimensions = getComponentDimensions(comp);
+              return (
+                <Group
+                  key={`${comp.id}-${comp.connectors.length}-${comp.connectors.reduce((p, c) => p + c.pins.length, 0)}`}
+                  ref={(node) => {
+                    if (node) {
+                      componentGroupRefs.current.set(comp.id, node);
+                    } else {
+                      componentGroupRefs.current.delete(comp.id);
+                    }
+                  }}
+                  x={comp.x}
+                  y={comp.y}
+                  draggable
+                  onDragStart={() => setIsStageDraggable(false)}
+                  onDragEnd={(e) => {
+                    e.cancelBubble = true;
+                    setIsStageDraggable(true);
+                    updateComponentProperties(comp.id, { x: e.target.x(), y: e.target.y() });
+                    setSelectedComponent({ ...comp, x: e.target.x(), y: e.target.y() });
+                  }}
+                  onClick={() => {
+                    setSelectedComponent(comp);
+                  }}
+                >
+                  <Rect
+                    width={dimensions.width}
+                    height={dimensions.height}
+                    fill="lightblue"
+                    stroke={selectedComponent === comp ? 'red' : 'black'}
+                    strokeWidth={selectedComponent === comp ? 2 : 1}
+                  />
+                  <Text
+                    text={comp.name}
+                    fontSize={16}
+                    fontFamily="Calibri"
+                    fill="black"
+                    width={dimensions.width}
+                    height={dimensions.height}
+                    align="center"
+                    verticalAlign="middle"
+                  />
+                  {/* Render Pins */}
+                  {(() => {
+                    const numConnectors = comp.connectors.length;
+                    if (numConnectors === 0) return null;
 
-                                  if (clickToConnectStartPin) {
-                                    // If the clicked pin is the same as the start pin, cancel the operation
-                                    if (clickToConnectStartPin.id === pin.id) {
-                                      setClickToConnectStartPin(null);
-                                      setDrawingWire(null);
-                                      setIsStageDraggable(true);
-                                      return;
-                                    }
+                    const totalPins = comp.connectors.reduce((acc, conn) => acc + conn.pins.length, 0);
+                    if (totalPins === 0) return null;
 
-                                    // This is the second click, attempt to complete a wire
-                                    const startPin = clickToConnectStartPin;
-                                    const endPin = pin;
-                                    const startComponent = components.find(c => c.connectors.some(conn => conn.pins.some(p => p.id === startPin.id)));
-                                    const endComponent = comp;
+                    // Calculate the available width for pins, considering padding between connectors
+                    const availableWidth = dimensions.width - (numConnectors + 1) * COMPONENT_PADDING;
+                    const pinSpacing = availableWidth / totalPins;
 
-                                    if (startComponent && endComponent && (startPin.id !== endPin.id || startComponent.id !== endComponent.id)) {
-                                      const newWire: Wire = {
-                                        id: `wire-${Date.now()}`,
-                                        startComponentId: startComponent.id,
-                                        startConnectionPointId: startPin.id,
-                                        endComponentId: endComponent.id,
-                                        endConnectionPointId: endPin.id,
-                                      };
-                                      setWires(prevWires => [...prevWires, newWire]);
-                                    }
-                                    setClickToConnectStartPin(null); // Reset click-to-connect state
-                                    setDrawingWire(null); // Clear temporary wire
-                                    setIsStageDraggable(true); // Re-enable stage drag
-                                  } else {
-                                    // This is the first click, or initiating a drag-and-drop wire
-                                    // Set the click-to-connect start pin
-                                    setClickToConnectStartPin(pin);
+                    let currentX = COMPONENT_PADDING;
 
-                                    // Also start drawing a temporary wire for visual feedback
-                                    const startAbsPos = getAbsoluteConnectionPointPosition(comp, pin);
-                                    setDrawingWire({
-                                      startComponent: comp,
-                                      startConnectionPoint: pin,
-                                      points: [startAbsPos.x, startAbsPos.y, startAbsPos.x, startAbsPos.y],
-                                    });
-                                  }
-                                }}
-                                onMouseUp={(e) => {
-                                  e.cancelBubble = true; // Prevent stage drag
-                                  // The drag-and-drop completion logic is handled here
-                                  // No change needed for drag-and-drop completion
-                                  setIsStageDraggable(true); // Re-enable stage drag
-                                  if (drawingWire && drawingWire.startComponent.id === comp.id && drawingWire.startConnectionPoint.id === pin.id) {
-                                    // This is a click on the same pin that started the drag, so cancel the drag
-                                    setDrawingWire(null);
-                                  }
-                                }}
-                              />
-                            );
-                          });
-                          currentConnectorOffsetX += (connector.pins.length * PIN_SPACING) + COMPONENT_PADDING; // Advance offset for next connector
-                          return <React.Fragment key={connector.id}>{connectorPins}</React.Fragment>;
-                        });
-                      })()}
-                    </>
-                  );
-                })()}
-              </Group>
-            ))}
+                    return comp.connectors.map((connector) => {
+                      const connectorPins = connector.pins.map((pin) => {
+                        const pinX = currentX;
+                        const pinY = dimensions.height - PIN_RADIUS; // On the bottom edge
+                        currentX += pinSpacing;
+
+                        return (
+                          <Circle
+                            key={pin.id}
+                            x={pinX}
+                            y={pinY}
+                            radius={PIN_RADIUS}
+                            fill="purple"
+                            stroke="black"
+                            strokeWidth={1}
+                            onMouseDown={(e) => {
+                              e.cancelBubble = true; // Prevent stage drag
+                              setIsStageDraggable(false); // Disable stage drag during wiring
+
+                              if (clickToConnectStartPin) {
+                                // If the clicked pin is the same as the start pin, cancel the operation
+                                if (clickToConnectStartPin.id === pin.id) {
+                                  setClickToConnectStartPin(null);
+                                  setDrawingWire(null);
+                                  setIsStageDraggable(true);
+                                  return;
+                                }
+
+                                // This is the second click, attempt to complete a wire
+                                const startPin = clickToConnectStartPin;
+                                const endPin = pin;
+                                const startComponent = components.find(c => c.connectors.some(conn => conn.pins.some(p => p.id === startPin.id)));
+                                const endComponent = comp;
+
+                                if (startComponent && endComponent && (startPin.id !== endPin.id || startComponent.id !== endComponent.id)) {
+                                  const newWire: Wire = {
+                                    id: `wire-${Date.now()}`,
+                                    startComponentId: startComponent.id,
+                                    startConnectionPointId: startPin.id,
+                                    endComponentId: endComponent.id,
+                                    endConnectionPointId: endPin.id,
+                                  };
+                                  setWires(prevWires => [...prevWires, newWire]);
+                                }
+                                setClickToConnectStartPin(null); // Reset click-to-connect state
+                                setDrawingWire(null); // Clear temporary wire
+                                setIsStageDraggable(true); // Re-enable stage drag
+                              } else {
+                                // This is the first click, or initiating a drag-and-drop wire
+                                // Set the click-to-connect start pin
+                                setClickToConnectStartPin(pin);
+
+                                // Also start drawing a temporary wire for visual feedback
+                                const startAbsPos = getAbsoluteConnectionPointPosition(comp, pin);
+                                setDrawingWire({
+                                  startComponent: comp,
+                                  startConnectionPoint: pin,
+                                  points: [startAbsPos.x, startAbsPos.y, startAbsPos.x, startAbsPos.y],
+                                });
+                              }
+                            }}
+                            onMouseUp={(e) => {
+                              e.cancelBubble = true; // Prevent stage drag
+                              // The drag-and-drop completion logic is handled here
+                              // No change needed for drag-and-drop completion
+                              setIsStageDraggable(true); // Re-enable stage drag
+                              if (drawingWire && drawingWire.startComponent.id === comp.id && drawingWire.startConnectionPoint.id === pin.id) {
+                                // This is a click on the same pin that started the drag, so cancel the drag
+                                setDrawingWire(null);
+                              }
+                            }}
+                          />
+                        );
+                      });
+                      currentX += COMPONENT_PADDING;
+                      return <React.Fragment key={connector.id}>{connectorPins}</React.Fragment>;
+                    });
+                  })()}
+                </Group>
+              );
+            })}
             {wires.map((wire) => {
               const startComponent = components.find(c => c.id === wire.startComponentId);
               const endComponent = components.find(c => c.id === wire.endComponentId);

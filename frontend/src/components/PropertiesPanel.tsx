@@ -1,11 +1,22 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { Connector, Pin } from './HarnessCanvas';
 
 const PropertiesPanel = () => {
   const { selectedComponent, updateComponentProperties } = useSelectionStore();
+  const [pinoutStrings, setPinoutStrings] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    if (selectedComponent) {
+      const initialPinoutStrings = selectedComponent.connectors.reduce((acc, conn) => {
+        acc[conn.id] = conn.pins.map(p => p.name).join(', ');
+        return acc;
+      }, {} as { [key: string]: string });
+      setPinoutStrings(initialPinoutStrings);
+    }
+  }, [selectedComponent]);
 
   const handleAddConnector = () => {
     if (selectedComponent) {
@@ -121,8 +132,14 @@ const PropertiesPanel = () => {
                 <div className="ml-2">
                   <h4 className="text-sm font-semibold mb-1">Pins (comma-separated)</h4>
                   <textarea
-                    value={connector.pins.map(p => p.name).join(',')}
-                    onChange={(e) => handlePinoutChange(connector.id, e.target.value)}
+                    value={pinoutStrings[connector.id] || ''}
+                    onChange={(e) => {
+                      setPinoutStrings({
+                        ...pinoutStrings,
+                        [connector.id]: e.target.value,
+                      });
+                    }}
+                    onBlur={() => handlePinoutChange(connector.id, pinoutStrings[connector.id] || '')}
                     className="border rounded px-2 py-1 w-full h-20"
                   />
                 </div>
