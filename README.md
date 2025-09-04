@@ -12,28 +12,43 @@ The project is open-source, so users can also choose to host their own instance 
 
 ## Technology Stack
 
-The project will be a web-based application built with the following technologies:
+The project is a web-based application built with the following technologies:
 
-*   **Frontend:** We will use a Next.js with React framework to create a Progressive Web App (PWA).
-*   **Backend:** A FastAPI backend will provide the API for the frontend.
-*   **Database:** A PostgreSQL database will be used for data storage.
+*   **Frontend:** Next.js with React and TypeScript.
+*   **Styling:** Tailwind CSS.
+*   **Backend:** FastAPI (Python).
+*   **Database:** PostgreSQL.
 
-## Documentation and Requirements Tracing
+## Project Status: Ground-Up Rebuild
 
-We use Sphinx for generating project documentation and Sphinx-needs for requirements tracing. All documentation and requirements are kept within the `Documentation/Requirements` directory, categorized into Product, Functional, and Non-functional requirements.
+This project is currently undergoing a complete rebuild to establish a more robust architecture and a modern, intuitive user interface. The previous codebase has been removed.
+
+Development will proceed based on the new architecture and requirements documents.
 
 ## Getting Started
 
-1.  **Clone the repository:** `git clone https://github.com/your-username/wireforge.git`
-2.  **Navigate to the frontend directory:** `cd frontend`
-3.  **Install dependencies:** `npm install`
-4.  **Run the development server:** `npm run dev`
-    *   The application will be accessible at `http://localhost:3000`.
+The frontend application has not been initialized yet. To set up the new Next.js application, follow these steps:
 
-## Current Development Status
+1.  **Navigate to the (currently empty) `frontend` directory:**
+    ```bash
+    mkdir frontend
+    cd frontend
+    ```
+2.  **Initialize the Next.js application:**
+    ```bash
+    npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
+    ```
+    *(Note: The command above will need to be run in an interactive terminal to answer the prompts.)*
 
-We have successfully integrated `react-konva` as the 2D graphics library for the harness design canvas, replacing the initial HTML/SVG implementation. Key functionalities like component placement (drag-and-drop) and wire drawing are now implemented and functional.
+3.  **Once initialized, run the development server:**
+    ```bash
+    npm run dev
+    ```
 
-### Testing
+## Documentation
 
-Unit tests are implemented using Jest and React Testing Library, covering core canvas interactions and BOM generation. End-to-end testing is planned for future phases.
+All project documentation, including architecture and requirements, is located in the `/Documentation` directory.
+
+*   **Architecture:** `Documentation/Development/01-Architecture-Overview.md`
+*   **Requirements:** `Documentation/Requirements/`
+*   **Archived Documents:** `Documentation/Requirements_Old/` and `Documentation/Development/Old_Plan.md`
