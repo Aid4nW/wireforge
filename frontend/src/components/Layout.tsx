@@ -1,5 +1,6 @@
 import React from 'react';
 import ComponentLibrary from './ComponentLibrary';
+import Toolbar from './Toolbar';
 
 const Layout = ({ children, rightSidebarContent }: { children: React.ReactNode, rightSidebarContent?: React.ReactNode }) => {
   return (
@@ -11,6 +12,7 @@ const Layout = ({ children, rightSidebarContent }: { children: React.ReactNode, 
 
       {/* Main Content Area for Canvas */}
       <main className="flex-1 flex flex-col">
+        <Toolbar />
         {children}
       </main>
 

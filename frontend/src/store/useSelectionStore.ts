@@ -1,25 +1,30 @@
 import { create } from 'zustand';
-import { Component } from '@/components/HarnessCanvas'; // Import full Component interface
+import { Component, Wire } from '@/components/HarnessCanvas'; // Import full Component and Wire interfaces
 
-interface SelectionState {
+interface DesignState {
   selectedComponent: Component | null;
   setSelectedComponent: (component: Component | null) => void;
-  components: Component[]; // Add components array
-  setComponents: (components: Component[]) => void; // Add setComponents action
-  updateComponentProperties: (componentId: string, updates: Partial<Component>) => void; // Add updateComponentProperties action
+  components: Component[];
+  setComponents: (components: Component[]) => void;
+  updateComponentProperties: (componentId: string, updates: Partial<Component>) => void;
+  wires: Wire[];
+  setWires: (wires: Wire[]) => void;
+  saveDesignToLocalStorage: () => void;
+  loadDesignFromLocalStorage: () => void;
 }
 
-export const useSelectionStore = create<SelectionState>((set) => ({
+export const useSelectionStore = create<DesignState>((set, get) => ({
   selectedComponent: null,
   setSelectedComponent: (component) => set({ selectedComponent: component }),
-  components: [], // Initialize components as an empty array
-  setComponents: (components) => set({ components }), // Implement setComponents
+  components: [],
+  setComponents: (components) => set({ components }),
+  wires: [],
+  setWires: (wires) => set({ wires }),
   updateComponentProperties: (componentId, updates) =>
     set((state) => {
       const updatedComponents = state.components.map((comp) =>
         comp.id === componentId ? { ...comp, ...updates } : comp
       );
-      // Also update the selected component if it's the one being updated
       const updatedSelectedComponent =
         state.selectedComponent && state.selectedComponent.id === componentId
           ? { ...state.selectedComponent, ...updates }
@@ -30,4 +35,20 @@ export const useSelectionStore = create<SelectionState>((set) => ({
         selectedComponent: updatedSelectedComponent,
       };
     }),
+  saveDesignToLocalStorage: () => {
+    const { components, wires } = get();
+    const design = {
+      components,
+      wires,
+      timestamp: new Date().toISOString(),
+    };
+    localStorage.setItem('wireforge-design', JSON.stringify(design));
+  },
+  loadDesignFromLocalStorage: () => {
+    const savedDesign = localStorage.getItem('wireforge-design');
+    if (savedDesign) {
+      const { components, wires } = JSON.parse(savedDesign);
+      set({ components, wires });
+    }
+  },
 }));
