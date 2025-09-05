@@ -27,27 +27,37 @@ Development will proceed based on the new architecture and requirements document
 
 ## Getting Started
 
-The frontend application has not been initialized yet. To set up the new Next.js application, follow these steps:
+The frontend application is located in the `frontend` directory. To get started, navigate to the directory and run the development server.
 
-1.  **Navigate to the (currently empty) `frontend` directory:**
-    ```bash
-    mkdir frontend
-    cd frontend
-    ```
-2.  **Initialize the Next.js application:**
-    ```bash
-    npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
-    ```
-    *(Note: The command above will need to be run in an interactive terminal to answer the prompts.)*
+For more detailed instructions, see the `frontend/README.md` file.
 
-3.  **Once initialized, run the development server:**
+```bash
+cd frontend
+npm run dev
+```
+
+## Documentation
+
+All project documentation, including architecture and requirements, is located in the `/Documentation` directory.
+
+*   **Architecture:** `Documentation/Development/01-Architecture-Overview.md`
+*   **Requirements:** `Documentation/Requirements/`
+*   **Archived Documents:** `Documentation/Requirements_Old/` and `Documentation/Development/Old_Plan.md`
+t server:**
     ```bash
     npm run dev
     ```
 
 ## Documentation
 
-All project documentation, including architecture and requirements, is located in the `/Documentation` directory.
+All project documentation, including architecture, requirements, and planning, is located in the `/Documentation` directory.
+
+*   **Architecture:** `Documentation/Development/01-Architecture-Overview.md`
+*   **Development Plan:** `Documentation/Development/02-Development-Plan.md`
+*   **Business Plan:** `Documentation/Development/03-Business-Plan.md`
+*   **Requirements:** `Documentation/Requirements/`
+*   **Archived Documents:** `Documentation/Requirements_Old/` and `Documentation/Development/Old_Plan.md`
+n the `/Documentation` directory.
 
 *   **Architecture:** `Documentation/Development/01-Architecture-Overview.md`
 *   **Requirements:** `Documentation/Requirements/`
