@@ -21,9 +21,7 @@ const ComponentLibrary = () => {
     <div>
       <h2 className="text-lg font-semibold mb-4">Component Library</h2>
       <div className="space-y-2">
-        <DraggableComponent name="Connector" />
-        <DraggableComponent name="Fuse" />
-        <DraggableComponent name="Relay" />
+        <DraggableComponent name="Component" />
       </div>
     </div>
   );
