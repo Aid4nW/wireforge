@@ -197,6 +197,9 @@ const HarnessCanvas = () => {
     const stage = stageRef.current;
     if (!stage) return { x: 0, y: 0 };
 
+    const componentNode = componentGroupRefs.current.get(component.id);
+    if (!componentNode) return { x: 0, y: 0 };
+
     const dimensions = getComponentDimensions(component);
     const { height: compHeight } = dimensions;
     let cpX = 0;
@@ -228,10 +231,10 @@ const HarnessCanvas = () => {
       currentX += COMPONENT_PADDING;
     }
 
-    const absoluteX = (component.x + cpX) * stage.scaleX() + stage.x();
-    const absoluteY = (component.y + cpY) * stage.scaleY() + stage.y();
+    // Get the absolute position of the pin relative to the stage
+    const pinAbsPos = componentNode.getAbsoluteTransform().point({ x: cpX, y: cpY });
 
-    return { x: absoluteX, y: absoluteY };
+    return { x: pinAbsPos.x, y: pinAbsPos.y };
   };
 
   const PIN_RADIUS = 4;
@@ -285,17 +288,22 @@ const HarnessCanvas = () => {
             if (drawingWire || clickToConnectStartPin) { 
               const stage = e.target.getStage();
               if (!stage) return;
-              const pointer = stage.getPointerPosition();
+              const pointer = stage.getRelativePointerPosition();
               if (!pointer) return;
 
               if (clickToConnectStartPin && !drawingWire) {
                 const startComponent = components.find(c => c.connectors.some(conn => conn.pins.some(p => p.id === clickToConnectStartPin.id)));
                 if (!startComponent) return;
                 const startAbsPos = getAbsoluteConnectionPointPosition(startComponent, clickToConnectStartPin);
+
+                if (!stage) return;
+                const stageTransform = stage.getAbsoluteTransform().copy().invert();
+                const startRelPos = stageTransform.point(startAbsPos);
+
                 setDrawingWire({
                   startComponent: startComponent,
                   startConnectionPoint: clickToConnectStartPin,
-                  points: [startAbsPos.x, startAbsPos.y, pointer.x, pointer.y],
+                  points: [startRelPos.x, startRelPos.y, pointer.x, pointer.y],
                 });
               } else if (drawingWire) { 
                 setDrawingWire(prev => {
@@ -308,7 +316,7 @@ const HarnessCanvas = () => {
               }
             }
           }}
-          onMouseUp={(e) => {
+          onMouseUp={() => {
             if (drawingWire) {
               setDrawingWire(null);
               setClickToConnectStartPin(null); 
@@ -318,11 +326,6 @@ const HarnessCanvas = () => {
           onClick={(e) => {
             if (e.target === e.target.getStage()) {
               setSelectedComponent(null);
-              if (clickToConnectStartPin) {
-                setClickToConnectStartPin(null);
-                setDrawingWire(null); 
-                setIsStageDraggable(true); 
-              }
             }
           }}
         >
@@ -401,15 +404,29 @@ const HarnessCanvas = () => {
                             onMouseDown={(e) => {
                               e.cancelBubble = true;
                               setIsStageDraggable(false);
+                              setClickToConnectStartPin(pin);
+
+                              const stage = stageRef.current;
+                              if (!stage) return;
+
+                              const startAbsPos = getAbsoluteConnectionPointPosition(comp, pin);
+                              const stageTransform = stage.getAbsoluteTransform().copy().invert();
+                              const startRelPos = stageTransform.point(startAbsPos);
+
+                              setDrawingWire({
+                                startComponent: comp,
+                                startConnectionPoint: pin,
+                                points: [startRelPos.x, startRelPos.y, startRelPos.x, startRelPos.y],
+                              });
+                            }}
+                            onMouseUp={() => {
+                              setIsStageDraggable(true);
+                              if (drawingWire && drawingWire.startComponent.id === comp.id && drawingWire.startConnectionPoint.id === pin.id) {
+                                setDrawingWire(null);
+                                return;
+                              }
 
                               if (clickToConnectStartPin) {
-                                if (clickToConnectStartPin.id === pin.id) {
-                                  setClickToConnectStartPin(null);
-                                  setDrawingWire(null);
-                                  setIsStageDraggable(true);
-                                  return;
-                                }
-
                                 const startPin = clickToConnectStartPin;
                                 const endPin = pin;
                                 const startComponent = components.find(c => c.connectors.some(conn => conn.pins.some(p => p.id === startPin.id)));
@@ -426,23 +443,6 @@ const HarnessCanvas = () => {
                                   setWires([...wires, newWire]);
                                 }
                                 setClickToConnectStartPin(null);
-                                setDrawingWire(null);
-                                setIsStageDraggable(true);
-                              } else {
-                                setClickToConnectStartPin(pin);
-
-                                const startAbsPos = getAbsoluteConnectionPointPosition(comp, pin);
-                                setDrawingWire({
-                                  startComponent: comp,
-                                  startConnectionPoint: pin,
-                                  points: [startAbsPos.x, startAbsPos.y, startAbsPos.x, startAbsPos.y],
-                                });
-                              }
-                            }}
-                            onMouseUp={(e) => {
-                              e.cancelBubble = true;
-                              setIsStageDraggable(true);
-                              if (drawingWire && drawingWire.startComponent.id === comp.id && drawingWire.startConnectionPoint.id === pin.id) {
                                 setDrawingWire(null);
                               }
                             }}
@@ -479,10 +479,15 @@ const HarnessCanvas = () => {
               const startAbsPos = getAbsoluteConnectionPointPosition(startComponent, startPin);
               const endAbsPos = getAbsoluteConnectionPointPosition(endComponent, endPin);
 
+              if (!stageRef.current) return null;
+              const stageTransform = stageRef.current.getAbsoluteTransform().copy().invert();
+              const startRelPos = stageTransform.point(startAbsPos);
+              const endRelPos = stageTransform.point(endAbsPos);
+
               return (
                 <Line
                   key={wire.id}
-                  points={[startAbsPos.x, startAbsPos.y, endAbsPos.x, endAbsPos.y]}
+                  points={[startRelPos.x, startRelPos.y, endRelPos.x, endRelPos.y]}
                   stroke="blue"
                   strokeWidth={2}
                 />
